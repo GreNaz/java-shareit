@@ -13,6 +13,5 @@ public class ItemMapper {
                 .owner(item.getOwner())
                 .request(item.getRequest())
                 .build();
-
     }
 }

@@ -4,11 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.error.BadRequestException;
+import ru.practicum.shareit.error.ConflictException;
+import ru.practicum.shareit.error.validation.Create;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TODO Sprint add-controllers.
@@ -17,23 +21,56 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
+
 public class UserController {
-    private HashMap<Long, User> users;
+    private static Long ID = 0L;
+    private final HashMap<Long, User> users = new HashMap<>();
 
     @PostMapping
     public User create(
-            @Valid
+            @Validated(Create.class)
             @RequestBody User user) {
         log.info("Received a request to add a new user");
-        return users.put(user.getId(), user);
+
+        if (Objects.isNull(user.getEmail())) {
+            throw new BadRequestException("Email not specified");
+        }
+        if (!user.getEmail().contains("@")) {
+            throw new BadRequestException("Incorrect email address");
+        }
+        if (users.containsValue(user)) {
+            throw new ConflictException("User with email = " + user.getEmail() + " already exist");
+        }
+
+        user.setId(++ID);
+        users.put(user.getId(), user);
+        return user;
     }
 
-    @PutMapping
+    @PatchMapping("/{id}")
     public User put(
             @Valid
+            @PathVariable Long id,
             @RequestBody User user) {
-        log.info("Received a request to update a user with id {}", user.getId());
-        return users.put(user.getId(), user);
+        log.info("Received a request to update a user with id {}", id);
+        user.setId(id);
+        if (Objects.isNull(user.getName())) {
+            if (!user.getEmail().contains("@")) {
+                throw new BadRequestException("Incorrect email address");
+            }
+            if (users.containsValue(user)) {
+                throw new ConflictException("User with email = " + user.getEmail() + " already exist");
+            }
+            users.get(id).setEmail(user.getEmail());
+            user.setName(users.get(id).getName());
+        }
+        if (Objects.isNull(user.getEmail())) {
+            users.get(id).setName(user.getName());
+            user.setEmail(users.get(id).getEmail());
+        }
+        users.put(id, user);
+        return user;
     }
 
     @GetMapping
