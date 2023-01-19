@@ -6,8 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.error.validation.Create;
 import ru.practicum.shareit.item.model.dto.ItemDto;
-
-import java.util.HashMap;
+import ru.practicum.shareit.item.service.ItemService;
 
 /**
  * TODO Sprint add-controllers.
@@ -18,8 +17,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
-    private HashMap<Integer, ItemDto> items = new HashMap<>();
-    private long ID = 0L;
+    private final ItemService itemService;
 
     @PostMapping
     public ItemDto create(
@@ -27,8 +25,7 @@ public class ItemController {
             @RequestHeader(name = "X-Sharer-User-Id") long userId,
             @RequestBody ItemDto itemDto) {
         log.info("Received a request to add a item");
-
-        return itemDto;
+        return itemService.create(userId, itemDto);
     }
 
 }

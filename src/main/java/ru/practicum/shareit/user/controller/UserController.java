@@ -23,7 +23,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-
     @PostMapping
     public UserDto create(
             @Validated(Create.class)
