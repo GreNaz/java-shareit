@@ -6,13 +6,13 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 
 public interface UserService {
-    List<User> get();
+    List<UserDto> get();
 
-    User get(long id);
+    UserDto get(long id);
 
     UserDto create(UserDto userDto);
 
-    User update(long id, User user);
+    UserDto update(long id, UserDto user);
 
     void delete(long id);
 }

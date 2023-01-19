@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.error.validation.Create;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.error.validation.Update;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
@@ -25,39 +26,39 @@ public class UserController {
 
 
     @PostMapping
-    public User create(
+    public UserDto create(
             @Validated(Create.class)
-            @RequestBody User user) {
+            @RequestBody UserDto userDto) {
         log.info("Received a request to add a new user");
-
+        return userService.create(userDto);
     }
 
     @PatchMapping("/{id}")
-    public User put(
-            @Valid
+    public UserDto put(
+            @Validated(Update.class)
             @PathVariable Long id,
-            @RequestBody User user) {
+            @RequestBody UserDto userDto) {
         log.info("Received a request to update a user with id {}", id);
-
+        return userService.update(id, userDto);
     }
 
     @GetMapping
-    public List<User> get() {
+    public List<UserDto> get() {
         log.info("Received a request to get all users");
-
+        return userService.get();
     }
 
     @GetMapping("/{id}")
-    public User get(
+    public UserDto get(
             @PathVariable Long id) {
         log.info("Received a request to get user with id: {} ", id);
-
+        return userService.get(id);
     }
 
     @DeleteMapping("/{id}")
     public void delete(
             @PathVariable Long id) {
         log.info("Received a request to remove user with id: {} ", id);
-
+        userService.delete(id);
     }
 }

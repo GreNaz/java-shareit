@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    List<User> get();
+    List<UserDto> get();
 
-    Optional<User> get(long id);
+    Optional<UserDto> get(long id);
 
     UserDto create(UserDto userDto);
 
-    User update(long id, User user);
+    UserDto update(long id, UserDto user);
 
     void delete(long id);
 }
