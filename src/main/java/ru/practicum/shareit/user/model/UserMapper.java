@@ -1,7 +1,6 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.model;
 
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.dto.UserDto;
 
 public class UserMapper {
     public static User toUser(UserDto userDto) {
