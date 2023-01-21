@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapper;
@@ -42,12 +41,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public UserDto create(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
-        if (Objects.isNull(user.getEmail())) {
-            throw new BadRequestException("Email address can not be null");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new BadRequestException("Incorrect email address");
-        }
         if (users.containsValue(user)) {
             throw new ConflictException("User with email = " + user.getEmail() + " already exist");
         }
@@ -61,9 +54,6 @@ public class UserRepositoryImpl implements UserRepository {
         userDto.setId(id);
         User user = UserMapper.toUser(userDto);
         if (Objects.isNull(user.getName())) {
-            if (!user.getEmail().contains("@")) {
-                throw new BadRequestException("Incorrect email address");
-            }
             if (users.containsValue(user)) {
                 throw new ConflictException("User with email = " + user.getEmail() + " already exist");
             }

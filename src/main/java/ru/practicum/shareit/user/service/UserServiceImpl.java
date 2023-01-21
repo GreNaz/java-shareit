@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.error.exception.BadRequestException;
+import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.model.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -24,17 +24,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto get(long id) {
         return UserMapper.toUserDto(userRepository.get(id).orElseThrow(()
-                -> new BadRequestException("User with id = " + id + " not found")));
+                -> new NotFoundException("User with id = " + id + " not found")));
     }
 
     @Override
     public UserDto create(UserDto userDto) {
-//        if (Objects.isNull(userDto.getEmail())) {
-//            throw new BadRequestException("Email not specified");
-//        }
-//        if (!userDto.getEmail().contains("@")) {
-//            throw new BadRequestException("Incorrect email address");
-//        }
         return userRepository.create(userDto);
     }
 

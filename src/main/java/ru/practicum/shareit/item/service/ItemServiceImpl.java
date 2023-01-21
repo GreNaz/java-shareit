@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -24,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto get(long id) {
         return itemRepository.get(id).orElseThrow(() ->
-                new BadRequestException("item with id = " + id + " not found"));
+                new NotFoundException("Item with id = " + id + " not found"));
     }
 
     @Override
