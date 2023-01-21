@@ -22,7 +22,7 @@ import static ru.practicum.shareit.user.model.UserMapper.toUser;
 public class UserRepositoryImpl implements UserRepository {
 
     private final HashMap<Long, User> users = new HashMap<>();
-    private static long userId = 0L;
+    private long userId = 0L;
 
     @Override
     public List<UserDto> get() {
