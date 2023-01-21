@@ -4,14 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemMapper;
-import ru.practicum.shareit.item.model.dto.ItemDto;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.item.model.ItemMapper.toItem;
+import static ru.practicum.shareit.item.ItemMapper.toItem;
 
 @Repository
 @RequiredArgsConstructor
@@ -57,11 +58,6 @@ public class ItemRepositoryImpl implements ItemRepository {
         }
         items.put(id, updatingItem);
         return ItemMapper.toItemDto(updatingItem);
-    }
-
-    @Override
-    public List<ItemDto> search(String text) {
-        return null;
     }
 
     @Override

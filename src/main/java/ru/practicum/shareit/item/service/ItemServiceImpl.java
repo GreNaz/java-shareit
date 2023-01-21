@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemMapper;
-import ru.practicum.shareit.item.model.dto.ItemDto;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String text) {
-        return itemRepository.search(text);
+        if (text.trim().isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return itemRepository.get().stream()
+                    .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                            item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                    .filter(Item::getAvailable)
+                    .map(ItemMapper::toItemDto)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
