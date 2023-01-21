@@ -38,14 +38,14 @@ public class ItemController {
     }
 
     @GetMapping("{itemId}")
-    public ItemDto get(
+    public ItemDto getItem(
             @PathVariable long itemId) {
-        return itemService.get(itemId);
+        return itemService.getItem(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> get() {
-        return itemService.get();
+    public List<ItemDto> getUserItems(@RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
+        return itemService.getUserItems(ownerId);
     }
 
     @PostMapping("/search")
