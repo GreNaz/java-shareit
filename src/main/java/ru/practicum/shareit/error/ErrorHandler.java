@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.ConflictException;
+import ru.practicum.shareit.error.exception.NotFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -20,17 +21,16 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleIncorrectParameterException(final ConflictException e) {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.error(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(final Throwable e) {
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleIncorrectParameterException(final ConflictException e) {
         log.error(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
-
 }
