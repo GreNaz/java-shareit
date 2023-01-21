@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.model.User;
 
 /**
  * TODO Sprint add-controllers.
@@ -21,6 +20,6 @@ public class Item {
     public String name;
     public String description;
     public Boolean available;
-    public User owner;
+    public long owner;
     public ItemRequest request;
 }

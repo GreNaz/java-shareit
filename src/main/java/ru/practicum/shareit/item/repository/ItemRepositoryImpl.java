@@ -10,7 +10,6 @@ import ru.practicum.shareit.item.model.dto.ItemDto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.model.ItemMapper.toItem;
 
@@ -21,12 +20,8 @@ public class ItemRepositoryImpl implements ItemRepository {
     private final HashMap<Long, Item> items = new HashMap<>();
 
     @Override
-    public List<ItemDto> get() {
-        return List.copyOf(
-                items.values().stream()
-                        .map(ItemMapper::toItemDto)
-                        .collect(Collectors.toList())
-        );
+    public List<Item> get() {
+        return List.copyOf(items.values());
     }
 
     @Override
@@ -41,16 +36,27 @@ public class ItemRepositoryImpl implements ItemRepository {
         if (items.containsValue(toItem(itemDto))) {
             throw new ConflictException("Item = " + itemDto + " already exist");
         }
-        itemDto.setId(++itemId);
-        items.put(itemDto.getId(), toItem(itemDto));
-        return itemDto;
+        Item item = toItem(itemDto);
+        item.setOwner(userId);
+        item.setId(++itemId);
+        items.put(item.getId(), item);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public ItemDto update(long id, ItemDto itemDto) {
-        itemDto.setId(id);
-        items.put(id, toItem(itemDto));
-        return itemDto;
+    public ItemDto update(long id, ItemDto itemDto, long ownerId) {
+        Item updatingItem = items.get(id);
+        if (itemDto.getName() != null) {
+            updatingItem.setName(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null) {
+            updatingItem.setDescription(itemDto.getDescription());
+        }
+        if (itemDto.getAvailable() != null) {
+            updatingItem.setAvailable(itemDto.getAvailable());
+        }
+        items.put(id, updatingItem);
+        return ItemMapper.toItemDto(updatingItem);
     }
 
     @Override

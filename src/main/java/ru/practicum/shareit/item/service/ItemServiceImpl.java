@@ -3,11 +3,14 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.exception.NotFoundException;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +20,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> get() {
-        return itemRepository.get();
+        return List.copyOf(
+                itemRepository.get().stream()
+                        .map(ItemMapper::toItemDto)
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override
@@ -34,8 +41,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(long id, ItemDto itemDto) {
-        return itemRepository.update(id, itemDto);
+    public ItemDto update(long id, ItemDto itemDto, long ownerId) {
+        //get all user items
+        List<Long> userItems = itemRepository.get().stream()
+                .filter(item -> item.owner > 0)
+                .filter(item -> item.getOwner() == ownerId)
+                .map(Item::getId)
+                .collect(Collectors.toList());
+        //ownership check
+        if (userItems.contains(id)) {
+            return itemRepository.update(id, itemDto, ownerId);
+        } else
+            throw new NotFoundException("It is not possible to edit this item on behalf of the user with id = " + ownerId);
     }
 
     @Override
