@@ -35,16 +35,21 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<UserDto> get(long id) {
-        return Optional.ofNullable(
-                UserMapper.toUserDto(users.get(id))
-        );
+    public Optional<User> get(long id) {
+        return Optional.ofNullable(users.get(id));
     }
 
     @Override
     public UserDto create(UserDto userDto) {
-        if (users.containsValue(UserMapper.toUser(userDto))) {
-            throw new ConflictException("User with email = " + userDto.getEmail() + " already exist");
+        User user = UserMapper.toUser(userDto);
+        if (Objects.isNull(user.getEmail())) {
+            throw new BadRequestException("Email address can not be null");
+        }
+        if (!user.getEmail().contains("@")) {
+            throw new BadRequestException("Incorrect email address");
+        }
+        if (users.containsValue(user)) {
+            throw new ConflictException("User with email = " + user.getEmail() + " already exist");
         }
         userDto.setId(++userId);
         users.put(userDto.getId(), toUser(userDto));

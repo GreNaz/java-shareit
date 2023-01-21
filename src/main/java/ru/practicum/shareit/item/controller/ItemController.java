@@ -8,6 +8,8 @@ import ru.practicum.shareit.error.validation.Create;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import java.util.List;
+
 /**
  * TODO Sprint add-controllers.
  */
@@ -21,11 +23,39 @@ public class ItemController {
 
     @PostMapping
     public ItemDto create(
-            @Validated(Create.class)
             @RequestHeader(name = "X-Sharer-User-Id") long userId,
-            @RequestBody ItemDto itemDto) {
+            @Validated(Create.class) @RequestBody ItemDto itemDto) {
         log.info("Received a request to add a item");
         return itemService.create(userId, itemDto);
     }
 
+    @PatchMapping("/{itemId}")
+    public ItemDto update(
+            @PathVariable long itemId,
+            @RequestBody ItemDto itemDto) {
+        return itemService.update(itemId, itemDto);
+    }
+
+    @GetMapping("{itemId}")
+    public ItemDto get(
+            @PathVariable long itemId) {
+        return itemService.get(itemId);
+    }
+
+    @GetMapping
+    public List<ItemDto> get() {
+        return itemService.get();
+    }
+
+    @PostMapping("/search")
+    public List<ItemDto> search(
+            @RequestParam String text) {
+        return itemService.search(text);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void delete(
+            @PathVariable long itemId) {
+        itemService.delete(itemId);
+    }
 }

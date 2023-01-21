@@ -15,10 +15,12 @@ import ru.practicum.shareit.user.model.User;
 @Builder
 @AllArgsConstructor
 public class Item {
+
     public long id;
+
     public String name;
     public String description;
-    public boolean available;
+    public Boolean available;
     public User owner;
     public ItemRequest request;
 }

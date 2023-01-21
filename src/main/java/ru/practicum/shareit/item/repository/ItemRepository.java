@@ -10,9 +10,12 @@ public interface ItemRepository {
 
     Optional<ItemDto> get(long id);
 
-    ItemDto create(ItemDto itemDto);
+    ItemDto create(long userId, ItemDto itemDto);
 
     ItemDto update(long id, ItemDto itemDto);
+
+    List<ItemDto> search(String text);
+
 
     void delete(long id);
 }
