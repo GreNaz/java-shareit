@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
 @Slf4j
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")

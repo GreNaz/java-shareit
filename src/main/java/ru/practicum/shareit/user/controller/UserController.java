@@ -12,11 +12,9 @@ import ru.practicum.shareit.user.service.UserService;
 import java.util.List;
 
 @Slf4j
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-
 public class UserController {
     private final UserService userService;
 
