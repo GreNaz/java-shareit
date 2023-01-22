@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.dto.ItemDto;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static ru.practicum.shareit.item.model.ItemMapper.toItem;
@@ -17,7 +18,7 @@ import static ru.practicum.shareit.item.model.ItemMapper.toItem;
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
     private long itemId = 0L;
-    private final HashMap<Long, Item> items = new HashMap<>();
+    private final Map<Long, Item> items = new HashMap<>();
 
     @Override
     public List<Item> get() {

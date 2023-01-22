@@ -10,9 +10,6 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @Validated
 @RestController
@@ -55,7 +52,7 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> search(
             @RequestHeader(name = "X-Sharer-User-Id") long ownerId,
-            @RequestParam(required = false) String text) {
+            @RequestParam String text) {
         log.info("Received a request to search by query = {}", text);
         return itemService.search(text);
     }

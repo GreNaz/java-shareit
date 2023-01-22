@@ -8,10 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.model.dto.UserDto;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.user.model.UserMapper.toUser;
@@ -21,7 +18,7 @@ import static ru.practicum.shareit.user.model.UserMapper.toUser;
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
-    private final HashMap<Long, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
     private long userId = 0L;
 
     @Override
