@@ -3,15 +3,15 @@ package ru.practicum.shareit.item.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.exception.ConflictException;
-import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemMapper;
+import ru.practicum.shareit.item.model.dto.ItemDto;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.practicum.shareit.item.ItemMapper.toItem;
+import static ru.practicum.shareit.item.model.ItemMapper.toItem;
 
 @Repository
 @RequiredArgsConstructor
