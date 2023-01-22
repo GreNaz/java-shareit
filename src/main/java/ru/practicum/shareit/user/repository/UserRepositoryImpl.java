@@ -9,9 +9,6 @@ import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.model.dto.UserDto;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static ru.practicum.shareit.user.model.UserMapper.toUser;
 
 @Slf4j
 @Repository
@@ -22,12 +19,8 @@ public class UserRepositoryImpl implements UserRepository {
     private long userId = 0L;
 
     @Override
-    public List<UserDto> get() {
-        return List.copyOf(
-                users.values().stream()
-                        .map(UserMapper::toUserDto)
-                        .collect(Collectors.toList())
-        );
+    public List<User> get() {
+        return List.copyOf(users.values());
     }
 
     @Override
@@ -36,14 +29,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserDto create(UserDto userDto) {
-        User user = UserMapper.toUser(userDto);
+    public User create(User user) {
         if (users.containsValue(user)) {
             throw new ConflictException("User with email = " + user.getEmail() + " already exist");
         }
-        userDto.setId(++userId);
-        users.put(userDto.getId(), toUser(userDto));
-        return userDto;
+        user.setId(++userId);
+        users.put(user.getId(), user);
+        return user;
     }
 
     @Override

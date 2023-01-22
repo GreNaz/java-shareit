@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.exception.NotFoundException;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.model.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,7 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> get() {
-        return userRepository.get();
+        return userRepository.get().stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -29,7 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
-        return userRepository.create(userDto);
+        User newUser = userRepository.create(UserMapper.toUser(userDto));
+        return UserMapper.toUserDto(newUser);
     }
 
     @Override
