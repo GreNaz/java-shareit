@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -54,7 +55,11 @@ public class ItemController {
             @RequestHeader(name = "X-Sharer-User-Id") long ownerId,
             @RequestParam String text) {
         log.info("Received a request to search by query = {}", text);
-        return itemService.search(text);
+        if (text.isBlank()) {
+            return Collections.emptyList();
+        } else {
+            return itemService.search(text);
+        }
     }
 
     @DeleteMapping("/{itemId}")

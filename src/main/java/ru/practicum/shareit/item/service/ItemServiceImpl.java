@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,13 +45,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto update(long id, Item item, long ownerId) {
-        //get all user items id
-        List<Long> userItems = itemRepository.get().stream()
-                .filter(userItem -> userItem.getOwner() == ownerId)
-                .map(Item::getId)
-                .collect(Collectors.toList());
+        //get real ownerId id
+        Item reciveItem = itemRepository.get(id).orElseThrow();
+
         //ownership check
-        if (userItems.contains(id)) {
+        if (ownerId == reciveItem.owner) {
             Item updatingItem = itemRepository.get(id).orElseThrow();
             if ((item.getName() != null) && (!item.getName().isBlank())) {
                 updatingItem.setName(item.getName());
@@ -70,16 +67,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String text) {
-        if (text.trim().isEmpty()) {
-            return Collections.emptyList();
-        } else {
-            return itemRepository.get().stream()
-                    .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
-                            item.getDescription().toLowerCase().contains(text.toLowerCase()))
-                    .filter(Item::getAvailable)
-                    .map(ItemMapper::toItemDto)
-                    .collect(Collectors.toList());
-        }
+        return itemRepository.search(text).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override

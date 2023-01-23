@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -46,5 +47,14 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public void delete(long id) {
         items.remove(id);
+    }
+
+    @Override
+    public List<Item> search(String text) {
+        return items.values().stream()
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .filter(Item::getAvailable)
+                .collect(Collectors.toList());
     }
 }
