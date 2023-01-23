@@ -4,15 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemMapper;
-import ru.practicum.shareit.item.model.dto.ItemDto;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static ru.practicum.shareit.item.model.ItemMapper.toItem;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,38 +22,35 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Optional<ItemDto> get(long id) {
-        return Optional.ofNullable(
-                ItemMapper.toItemDto(items.get(id))
-        );
+    public Optional<Item> get(long id) {
+        return Optional.ofNullable(items.get(id));
     }
 
     @Override
-    public ItemDto create(long userId, ItemDto itemDto) {
-        if (items.containsValue(toItem(itemDto))) {
-            throw new ConflictException("Item = " + itemDto + " already exist");
+    public Item create(long userId, Item item) {
+        if (items.containsValue(item)) {
+            throw new ConflictException("Item = " + item + " already exist");
         }
-        Item item = toItem(itemDto);
         item.setOwner(userId);
         item.setId(++itemId);
         items.put(item.getId(), item);
-        return ItemMapper.toItemDto(item);
+        return item;
     }
 
     @Override
-    public ItemDto update(long id, ItemDto itemDto, long ownerId) {
+    public Item update(long id, Item item, long ownerId) {
         Item updatingItem = items.get(id);
-        if (itemDto.getName() != null) {
-            updatingItem.setName(itemDto.getName());
+        if (item.getName() != null) {
+            updatingItem.setName(item.getName());
         }
-        if (itemDto.getDescription() != null) {
-            updatingItem.setDescription(itemDto.getDescription());
+        if (item.getDescription() != null) {
+            updatingItem.setDescription(item.getDescription());
         }
-        if (itemDto.getAvailable() != null) {
-            updatingItem.setAvailable(itemDto.getAvailable());
+        if (item.getAvailable() != null) {
+            updatingItem.setAvailable(item.getAvailable());
         }
         items.put(id, updatingItem);
-        return ItemMapper.toItemDto(updatingItem);
+        return updatingItem;
     }
 
     @Override

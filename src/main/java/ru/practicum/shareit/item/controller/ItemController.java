@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.error.validation.Create;
+import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -22,7 +23,7 @@ public class ItemController {
             @RequestHeader(name = "X-Sharer-User-Id") long userId,
             @Validated(Create.class) @RequestBody ItemDto itemDto) {
         log.info("Received a request to add a item");
-        return itemService.create(userId, itemDto);
+        return itemService.create(userId, ItemMapper.toItem(itemDto));
     }
 
     @PatchMapping("/{itemId}")
@@ -31,7 +32,7 @@ public class ItemController {
             @RequestBody ItemDto itemDto,
             @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
         log.info("Received a request to update the item");
-        return itemService.update(itemId, itemDto, ownerId);
+        return itemService.update(itemId, ItemMapper.toItem(itemDto), ownerId);
     }
 
     @GetMapping("{itemId}")

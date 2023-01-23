@@ -32,27 +32,28 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItem(long id) {
-        return itemRepository.get(id).orElseThrow(() ->
+        Item item = itemRepository.get(id).orElseThrow(() ->
                 new NotFoundException("Item with id = " + id + " not found"));
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public ItemDto create(long userId, ItemDto itemDto) {
+    public ItemDto create(long userId, Item item) {
         userRepository.get(userId).orElseThrow(() ->
                 new NotFoundException("User with id = " + userId + " not found"));
-        return itemRepository.create(userId, itemDto);
+        return ItemMapper.toItemDto(itemRepository.create(userId, item));
     }
 
     @Override
-    public ItemDto update(long id, ItemDto itemDto, long ownerId) {
+    public ItemDto update(long id, Item item, long ownerId) {
         //get all user items id
         List<Long> userItems = itemRepository.get().stream()
-                .filter(item -> item.getOwner() == ownerId)
+                .filter(userItem -> userItem.getOwner() == ownerId)
                 .map(Item::getId)
                 .collect(Collectors.toList());
         //ownership check
         if (userItems.contains(id)) {
-            return itemRepository.update(id, itemDto, ownerId);
+            return ItemMapper.toItemDto(itemRepository.update(id, item, ownerId));
         } else
             throw new NotFoundException("It is not possible to edit this item on behalf of the user with id = " + ownerId);
     }
