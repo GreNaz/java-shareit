@@ -53,7 +53,17 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
         //ownership check
         if (userItems.contains(id)) {
-            return ItemMapper.toItemDto(itemRepository.update(id, item, ownerId));
+            Item updatingItem = itemRepository.get(id).orElseThrow();
+            if ((item.getName() != null) && (!item.getName().isBlank())) {
+                updatingItem.setName(item.getName());
+            }
+            if ((item.getDescription() != null) && (!item.getDescription().isBlank())) {
+                updatingItem.setDescription(item.getDescription());
+            }
+            if (item.getAvailable() != null) {
+                updatingItem.setAvailable(item.getAvailable());
+            }
+            return ItemMapper.toItemDto(updatingItem);
         } else
             throw new NotFoundException("It is not possible to edit this item on behalf of the user with id = " + ownerId);
     }

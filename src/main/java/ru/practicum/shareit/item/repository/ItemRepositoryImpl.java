@@ -39,17 +39,8 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item update(long id, Item item, long ownerId) {
-        Item updatingItem = items.get(id);
-        if ((item.getName() != null) && (!item.getName().isBlank())) {
-            updatingItem.setName(item.getName());
-        }
-        if ((item.getDescription() != null) && (!item.getDescription().isBlank())) {
-            updatingItem.setDescription(item.getDescription());
-        }
-        if (item.getAvailable() != null) {
-            updatingItem.setAvailable(item.getAvailable());
-        }
-        return updatingItem;
+        return null;
+        //вынес логику как и попросили
     }
 
     @Override
