@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserMapper;
-import ru.practicum.shareit.user.model.dto.UserDto;
 
 import java.util.*;
 
@@ -39,9 +37,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserDto update(long id, UserDto userDto) {
-        userDto.setId(id);
-        User user = UserMapper.toUser(userDto);
+    public User update(long id, User user) {
+        user.setId(id);
         if (Objects.isNull(user.getName())) {
             if (users.containsValue(user)) {
                 throw new ConflictException("User with email = " + user.getEmail() + " already exist");
@@ -54,7 +51,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setEmail(users.get(id).getEmail());
         }
         users.put(id, user);
-        return UserMapper.toUserDto(user);
+        return user;
     }
 
     @Override

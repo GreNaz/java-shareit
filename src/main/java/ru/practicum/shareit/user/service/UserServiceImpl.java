@@ -32,14 +32,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto create(UserDto userDto) {
-        User newUser = userRepository.create(UserMapper.toUser(userDto));
-        return UserMapper.toUserDto(newUser);
+    public UserDto create(User user) {
+        return UserMapper.toUserDto(userRepository.create(user));
     }
 
     @Override
-    public UserDto update(long id, UserDto userDto) {
-        return userRepository.update(id, userDto);
+    public UserDto update(long id, User user) {
+        return UserMapper.toUserDto(userRepository.update(id, user));
     }
 
     @Override

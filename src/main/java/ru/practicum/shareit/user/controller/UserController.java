@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.error.validation.Create;
 import ru.practicum.shareit.error.validation.Update;
+import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.model.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -22,7 +23,7 @@ public class UserController {
     public UserDto create(
             @Validated(Create.class) @RequestBody UserDto userDto) {
         log.info("Received a request to add a new user");
-        return userService.create(userDto);
+        return userService.create(UserMapper.toUser(userDto));
     }
 
     @PatchMapping("/{id}")
@@ -30,7 +31,7 @@ public class UserController {
             @PathVariable Long id,
             @Validated(Update.class) @RequestBody UserDto userDto) {
         log.info("Received a request to update a user with id {}", id);
-        return userService.update(id, userDto);
+        return userService.update(id, UserMapper.toUser(userDto));
     }
 
     @GetMapping
