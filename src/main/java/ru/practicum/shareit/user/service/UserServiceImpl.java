@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapper;
@@ -10,6 +11,7 @@ import ru.practicum.shareit.user.model.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,7 +40,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(long id, User user) {
-        return UserMapper.toUserDto(userRepository.update(id, user));
+        User userInMem = userRepository.get(id).orElseThrow(()
+                -> new NotFoundException("User with id = " + id + " not found"));
+
+        if (!Objects.isNull(user.getEmail()) && !user.getEmail().isBlank()) {
+            if (userRepository.get().contains(user)) {
+                throw new ConflictException("User with email = " + user.getEmail() + " already exist");
+            }
+            userInMem.setEmail(user.getEmail());
+        }
+        if (!Objects.isNull(user.getName()) && !user.getName().isBlank()) {
+            userInMem.setName(user.getName());
+        }
+        return UserMapper.toUserDto(userInMem);
     }
 
     @Override

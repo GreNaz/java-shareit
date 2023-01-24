@@ -6,7 +6,10 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -34,21 +37,6 @@ public class UserRepositoryImpl implements UserRepository {
         user.setId(++userId);
         users.put(user.getId(), user);
         return user;
-    }
-
-    @Override
-    public User update(long id, User user) {
-        User userInMem = users.get(id);
-        if (!Objects.isNull(user.getEmail()) && !user.getEmail().isBlank()) {
-            if (users.containsValue(user)) {
-                throw new ConflictException("User with email = " + user.getEmail() + " already exist");
-            }
-            userInMem.setEmail(user.getEmail());
-        }
-        if (!Objects.isNull(user.getName()) && !user.getName().isBlank()) {
-            userInMem.setName(user.getName());
-        }
-        return userInMem;
     }
 
     @Override
