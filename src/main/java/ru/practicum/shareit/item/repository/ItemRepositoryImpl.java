@@ -38,11 +38,6 @@ public class ItemRepositoryImpl implements ItemRepository {
         return item;
     }
 
-    @Override
-    public Item update(long id, Item item, long ownerId) {
-        return null;
-        //вынес логику как и попросили
-    }
 
     @Override
     public void delete(long id) {

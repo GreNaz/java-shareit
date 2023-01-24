@@ -10,16 +10,15 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserDto {
-    private long id;
+    private final long id;
     @NotBlank(groups = Create.class, message = "Received user with empty name")
-    private String name;
+    private final String name;
     @Email(groups = {Create.class, Update.class}, message = "Incorrect email address")
     @NotEmpty(groups = Create.class, message = "Email not specified")
     @EqualsAndHashCode.Include
-    private String email;
+    private final String email;
 }

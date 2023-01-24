@@ -45,22 +45,21 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto update(long id, Item item, long ownerId) {
-        //get real ownerId id
-        Item reciveItem = itemRepository.get(id).orElseThrow();
+        Item reciveItem = itemRepository.get(id).orElseThrow(()
+                -> new NotFoundException("Item with id = " + id + " not found"));
 
         //ownership check
-        if (ownerId == reciveItem.owner) {
-            Item updatingItem = itemRepository.get(id).orElseThrow();
+        if (ownerId == reciveItem.getOwner()) {
             if ((item.getName() != null) && (!item.getName().isBlank())) {
-                updatingItem.setName(item.getName());
+                reciveItem.setName(item.getName());
             }
             if ((item.getDescription() != null) && (!item.getDescription().isBlank())) {
-                updatingItem.setDescription(item.getDescription());
+                reciveItem.setDescription(item.getDescription());
             }
             if (item.getAvailable() != null) {
-                updatingItem.setAvailable(item.getAvailable());
+                reciveItem.setAvailable(item.getAvailable());
             }
-            return ItemMapper.toItemDto(updatingItem);
+            return ItemMapper.toItemDto(reciveItem);
         } else
             throw new NotFoundException("It is not possible to edit this item on behalf of the user with id = " + ownerId);
     }

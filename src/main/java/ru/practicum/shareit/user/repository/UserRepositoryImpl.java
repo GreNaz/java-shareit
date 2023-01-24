@@ -38,20 +38,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(long id, User user) {
-        user.setId(id);
-        if (Objects.isNull(user.getName()) || user.getName().isBlank()) {
+        User userInMem = users.get(id);
+        if (!Objects.isNull(user.getEmail()) && !user.getEmail().isBlank()) {
             if (users.containsValue(user)) {
                 throw new ConflictException("User with email = " + user.getEmail() + " already exist");
             }
-            users.get(id).setEmail(user.getEmail());
-            user.setName(users.get(id).getName());
+            userInMem.setEmail(user.getEmail());
         }
-        if (Objects.isNull(user.getEmail()) || user.getEmail().isBlank()) {
-            users.get(id).setName(user.getName());
-            user.setEmail(users.get(id).getEmail());
+        if (!Objects.isNull(user.getName()) && !user.getName().isBlank()) {
+            userInMem.setName(user.getName());
         }
-        users.put(id, user);
-        return user;
+        return userInMem;
     }
 
     @Override
