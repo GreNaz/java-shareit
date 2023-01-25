@@ -43,7 +43,8 @@ public class UserServiceImpl implements UserService {
         User userInMem = userRepository.get(id).orElseThrow(()
                 -> new NotFoundException("User with id = " + id + " not found"));
 
-        if (!Objects.isNull(user.getEmail()) && !user.getEmail().isBlank()) {
+        if (!Objects.isNull(user.getEmail()) && !user.getEmail().isBlank()
+                && !userInMem.getEmail().equals(user.getEmail())) {
             if (userRepository.get().contains(user)) {
                 throw new ConflictException("User with email = " + user.getEmail() + " already exist");
             }
