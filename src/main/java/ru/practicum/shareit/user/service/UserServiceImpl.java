@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(User user) {
+        checkUserExist(user);
         return UserMapper.toUserDto(userRepository.create(user));
     }
 
@@ -45,9 +46,7 @@ public class UserServiceImpl implements UserService {
 
         if (!Objects.isNull(user.getEmail()) && !user.getEmail().isBlank()
                 && !userInMem.getEmail().equals(user.getEmail())) {
-            if (userRepository.get().contains(user)) {
-                throw new ConflictException("User with email = " + user.getEmail() + " already exist");
-            }
+            checkUserExist(user);
             userInMem.setEmail(user.getEmail());
         }
         if (!Objects.isNull(user.getName()) && !user.getName().isBlank()) {
@@ -59,5 +58,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(long id) {
         userRepository.delete(id);
+    }
+
+    private void checkUserExist(User user) {
+        if (userRepository.get().contains(user)) {
+            throw new ConflictException("User with email = " + user.getEmail() + " already exist");
+        }
     }
 }
