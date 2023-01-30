@@ -21,32 +21,28 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getUserItems(long userId) {
         //get all user items
-        List<Item> userItems = itemRepository.get().stream()
+        List<Item> userItems = itemRepository.findAll().stream()
                 .filter(item -> item.getOwner() == userId)
                 .collect(Collectors.toList());
 
-        return userItems.stream()
-                .map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return userItems.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
     public ItemDto getItem(long id) {
-        Item item = itemRepository.get(id).orElseThrow(() ->
-                new NotFoundException("Item with id = " + id + " not found"));
+        Item item = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item with id = " + id + " not found"));
         return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto create(long userId, Item item) {
-        userRepository.get(userId).orElseThrow(() ->
-                new NotFoundException("User with id = " + userId + " not found"));
-        return ItemMapper.toItemDto(itemRepository.create(userId, item));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with id = " + userId + " not found"));
+        return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Override
     public ItemDto update(long id, Item item, long ownerId) {
-        Item reciveItem = itemRepository.get(id).orElseThrow(()
-                -> new NotFoundException("Item with id = " + id + " not found"));
+        Item reciveItem = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item with id = " + id + " not found"));
 
         //ownership check
         if (ownerId == reciveItem.getOwner()) {
@@ -66,13 +62,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String text) {
-        return itemRepository.search(text).stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+//        return itemRepository.searchByDescriptionAndNameLikeOrderByAvailable(text).stream()
+//                .map(ItemMapper::toItemDto)
+//                .collect(Collectors.toList());
+        return null;
     }
 
     @Override
     public void delete(long id) {
-        itemRepository.delete(id);
+        itemRepository.deleteById(id);
     }
 }

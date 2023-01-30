@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.model;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.user.model.dto.UserDto;
-
+//TODO  Для удобства их можно наследовать от класса java.util.function.Function или в виде статического метода.
 @UtilityClass
 public class UserMapper {
     public static User toUser(UserDto userDto) {

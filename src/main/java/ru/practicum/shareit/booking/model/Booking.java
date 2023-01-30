@@ -23,5 +23,7 @@ public class Booking {
     private LocalDate end;
     private Item item;
     private User booker;
+    //Для поля status в классе Booking вам также пригодится
+    // @Enumerated. Добавьте соответствующие аннотации для сущностей.
     private BookingStatus status;
 }
