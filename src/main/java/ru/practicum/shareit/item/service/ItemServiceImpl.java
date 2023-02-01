@@ -22,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getUserItems(long userId) {
         //get all user items
         List<Item> userItems = itemRepository.findAll().stream()
-                .filter(item -> item.getOwner() == userId)
+                .filter(item -> item.getOwner().getId() == userId)
                 .collect(Collectors.toList());
 
         return userItems.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
@@ -45,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
         Item reciveItem = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item with id = " + id + " not found"));
 
         //ownership check
-        if (ownerId == reciveItem.getOwner()) {
+        if (ownerId == reciveItem.getOwner().getId()) {
             if ((item.getName() != null) && (!item.getName().isBlank())) {
                 reciveItem.setName(item.getName());
             }

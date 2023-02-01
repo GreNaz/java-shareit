@@ -44,7 +44,8 @@ public class UserServiceImpl implements UserService {
         User userInMem = userRepository.findById(id).orElseThrow(()
                 -> new NotFoundException("User with id = " + id + " not found"));
 
-        if (!Objects.isNull(user.getEmail()) && !user.getEmail().isBlank()
+        if (!Objects.isNull(user.getEmail())
+                && !user.getEmail().isBlank()
                 && !userInMem.getEmail().equals(user.getEmail())) {
             checkUserExist(user);
             userInMem.setEmail(user.getEmail());
@@ -52,6 +53,8 @@ public class UserServiceImpl implements UserService {
         if (!Objects.isNull(user.getName()) && !user.getName().isBlank()) {
             userInMem.setName(user.getName());
         }
+        userRepository.save(userInMem);
+
         return UserMapper.toUserDto(userInMem);
     }
 
