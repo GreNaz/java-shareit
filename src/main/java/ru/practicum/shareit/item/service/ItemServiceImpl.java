@@ -30,19 +30,23 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItem(long id) {
-        Item item = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item with id = " + id + " not found"));
+        Item item = itemRepository.findById(id).orElseThrow(()
+                -> new NotFoundException("Item with id = " + id + " not found"));
         return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto create(long userId, Item item) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with id = " + userId + " not found"));
+        item.setOwner(userRepository.findById(userId).orElseThrow(()
+                -> new NotFoundException("User with id = " + userId + " not found")));
+
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Override
     public ItemDto update(long id, Item item, long ownerId) {
-        Item reciveItem = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item with id = " + id + " not found"));
+        Item reciveItem = itemRepository.findById(id).orElseThrow(()
+                -> new NotFoundException("Item with id = " + id + " not found"));
 
         //ownership check
         if (ownerId == reciveItem.getOwner().getId()) {
@@ -55,6 +59,7 @@ public class ItemServiceImpl implements ItemService {
             if (item.getAvailable() != null) {
                 reciveItem.setAvailable(item.getAvailable());
             }
+            itemRepository.save(reciveItem);
             return ItemMapper.toItemDto(reciveItem);
         } else
             throw new NotFoundException("It is not possible to edit this item on behalf of the user with id = " + ownerId);
@@ -62,10 +67,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String text) {
-//        return itemRepository.searchByDescriptionAndNameLikeOrderByAvailable(text).stream()
-//                .map(ItemMapper::toItemDto)
-//                .collect(Collectors.toList());
-        return null;
+        return itemRepository.searchByText(text.toLowerCase()).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
