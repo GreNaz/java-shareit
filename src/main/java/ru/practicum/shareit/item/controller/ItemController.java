@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
-   //TODO DTO предназначены для использования в контроллерах.
 
     @PostMapping
     public ItemDto create(
