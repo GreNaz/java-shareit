@@ -15,6 +15,8 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +33,10 @@ public class BookingController {
 
         log.info("Received a request to add a booking");
 
+        //похоже это должно быть в сервисе,
+        //но работа с преобразованием в объект дожна быть тут
+        //я в замешательстве
+
         Item item = itemRepository.findById(bookingDtoRQ.getItemId()).orElseThrow(() -> {
             throw new NotFoundException("Item with id = " + bookingDtoRQ.getItemId() + " not found");
         });
@@ -41,45 +47,29 @@ public class BookingController {
         return bookingService.create(userId, BookingMapper.toBooking(bookingDtoRQ, item, user));
     }
 
-//    @PatchMapping("/{itemId}")
-//    public ItemDto update(
-//            @PathVariable long itemId,
-//            @RequestBody ItemDto itemDto,
-//            @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
-//        log.info("Received a request to update the item");
-//        return itemService.update(itemId, ItemMapper.toItem(itemDto), ownerId);
-//    }
-//
-//    @GetMapping("{itemId}")
-//    public ItemDto getItem(
-//            @PathVariable long itemId) {
-//        log.info("Received a request to get Item with id {}", itemId);
-//        return itemService.getItem(itemId);
-//    }
-//
-//    @GetMapping
-//    public List<ItemDto> getUserItems(
-//            @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
-//        log.info("Received a request to get Items from User with id = {}", ownerId);
-//        return itemService.getUserItems(ownerId);
-//    }
-//
-//    @GetMapping("/search")
-//    public List<ItemDto> search(
-//            @RequestHeader(name = "X-Sharer-User-Id") long ownerId,
-//            @RequestParam String text) {
-//        log.info("Received a request to search by query = {}", text);
-//        if (text.isBlank()) {
-//            return Collections.emptyList();
-//        } else {
-//            return itemService.search(text);
-//        }
-//    }
-//
-//    @DeleteMapping("/{itemId}")
-//    public void delete(
-//            @PathVariable long itemId) {
-//        log.info("Received a request to delete Item with id {} ", itemId);
-//        itemService.delete(itemId);
-//    }
+    @PatchMapping("/{bookingId}")
+    public BookingDtoRS update(
+            @PathVariable long bookingId,
+            @RequestParam boolean approved,
+            @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
+        log.info("Received a request to update the booking");
+        return bookingService.update(bookingId, ownerId, approved);
+    }
+
+    @GetMapping("/{bookingId}")
+    public List<BookingDtoRS> getBooking(
+            @RequestParam(defaultValue = "ALL") String state,
+            @PathVariable long bookingId,
+            @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
+        log.info("Received a request to get bookings with state {}", state);
+        return bookingService.getWithState(bookingId, ownerId, state);
+    }
+
+    @GetMapping("/owner")
+    public List<BookingDtoRS> getBookingFromOwner(
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestHeader(name = "X-Sharer-User-Id") long ownerId) {
+        log.info("Received a request to get bookings with state {}", state);
+        return bookingService.getBookingFromOwner(ownerId, state);
+    }
 }
