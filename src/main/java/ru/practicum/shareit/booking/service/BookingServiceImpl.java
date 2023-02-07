@@ -13,6 +13,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Unable to book your own");
         }
 
-        if (Boolean.FALSE.equals(booking.getItem().getAvailable())) {
+        if (!booking.getItem().getAvailable()) {
             throw new BadRequestException("Item not available for booking now");
         }
 
@@ -49,22 +50,45 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Booking with id = " + bookingId + " not found");
         });
 
-        if (approved) {
-            booking.setStatus(BookingStatus.APPROVED);
-            bookingRepository.save(booking);
+        if (ownerId == booking.getItem().getOwner().getId()) {
+            if (approved) {
+                booking.setStatus(BookingStatus.APPROVED);
+            } else {
+                booking.setStatus(BookingStatus.REJECTED);
+            }
+            return BookingMapper.toBookingRS(bookingRepository.save(booking));
         } else {
-            booking.setStatus(BookingStatus.REJECTED);
-            bookingRepository.save(booking);
+            throw new BadRequestException("This user can't make this");
         }
-        return BookingMapper.toBookingRS(booking);
+
     }
 
     @Override
-    public List<BookingDtoRS> getWithState(long bookingId, long ownerId, String state) {
-        // Бронирования должны возвращаться отсортированными по дате от более новых к более старым.
+    public BookingDtoRS get(long bookingId, long ownerId) {
+
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(()
+                -> new NotFoundException("Booking with id " + bookingId + " was not found"));
+
+        if (ownerId == booking.getItem().getOwner().getId()
+                || ownerId == booking.getBooker().getId()) {
+            return BookingMapper.toBookingRS(booking);
+        } else {
+            throw new BadRequestException("User with id " + ownerId + " can't see this information");
+        }
+    }
+
+    @Override
+    public List<BookingDtoRS> getBookings(long ownerId, String state) {
+        User user = userRepository.findById(ownerId).orElseThrow(() -> {
+            throw new NotFoundException("User with id = " + ownerId + " not found");
+        });
+
+        //Бронирования должны возвращаться отсортированными по дате от более новых к более старым.
         switch (state) {
             case "ALL":
-                break;
+                return bookingRepository.findAllByBookerIdOrderByStartDesc(ownerId).stream()
+                        .map(BookingMapper::toBookingRS)
+                        .collect(Collectors.toList());
             case "CURRENT":
                 break;
             case "PAST":
@@ -78,12 +102,14 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new BadRequestException("UNSUPPORTED_STATUS");
         }
-
         return null;
     }
 
     @Override
     public List<BookingDtoRS> getBookingFromOwner(long ownerId, String state) {
+        User user = userRepository.findById(ownerId).orElseThrow(() -> {
+            throw new NotFoundException("User with id = " + ownerId + " not found");
+        });
         return null;
     }
 }

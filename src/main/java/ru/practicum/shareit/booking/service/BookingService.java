@@ -11,7 +11,9 @@ public interface BookingService {
 
     BookingDtoRS update(long bookingId, long ownerId, boolean approved);
 
-    List<BookingDtoRS> getWithState(long bookingId, long ownerId, String state);
+    BookingDtoRS get(long bookingId, long ownerId);
+
+    List<BookingDtoRS> getBookings(long ownerId, String state);
 
     List<BookingDtoRS> getBookingFromOwner(long ownerId, String state);
 
