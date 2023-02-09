@@ -12,6 +12,8 @@ import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Unable to book your own");
         }
 
-        if (!booking.getItem().getAvailable()) {
+        if (Boolean.FALSE.equals(booking.getItem().getAvailable())) {
             throw new BadRequestException("Item not available for booking now");
         }
 
@@ -49,6 +51,10 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> {
             throw new NotFoundException("Booking with id = " + bookingId + " not found");
         });
+        if (booking.getStatus().equals(BookingStatus.APPROVED)
+                || booking.getStatus().equals(BookingStatus.REJECTED)) {
+            throw new BadRequestException("This booking can't changed status");
+        }
 
         if (ownerId == booking.getItem().getOwner().getId()) {
             if (approved) {
@@ -58,7 +64,7 @@ public class BookingServiceImpl implements BookingService {
             }
             return BookingMapper.toBookingRS(bookingRepository.save(booking));
         } else {
-            throw new BadRequestException("This user can't make this");
+            throw new NotFoundException("This user can't make this");
         }
 
     }
@@ -73,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
                 || ownerId == booking.getBooker().getId()) {
             return BookingMapper.toBookingRS(booking);
         } else {
-            throw new BadRequestException("User with id " + ownerId + " can't see this information");
+            throw new NotFoundException("User with id " + ownerId + " can't see this information");
         }
     }
 
@@ -82,27 +88,38 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository.findById(ownerId).orElseThrow(() -> {
             throw new NotFoundException("User with id = " + ownerId + " not found");
         });
-
-        //Бронирования должны возвращаться отсортированными по дате от более новых к более старым.
+        ArrayList<Booking> bookings = new ArrayList<>();
         switch (state) {
             case "ALL":
-                return bookingRepository.findAllByBookerIdOrderByStartDesc(ownerId).stream()
-                        .map(BookingMapper::toBookingRS)
-                        .collect(Collectors.toList());
+                bookings.addAll(bookingRepository
+                        .findAllByBookerIdOrderByStartDesc(ownerId));
+                break;
             case "CURRENT":
+                bookings.addAll(bookingRepository
+                        .findByBooker_IdAndEndAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
                 break;
             case "PAST":
+                bookings.addAll(bookingRepository
+                        .findByBooker_IdAndStartBeforeOrderByStartDesc(ownerId, LocalDateTime.now()));
                 break;
             case "FUTURE":
+                bookings.addAll(bookingRepository
+                        .findByBooker_IdAndStartAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
                 break;
             case "WAITING":
+                bookings.addAll(bookingRepository
+                        .findByBooker_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.WAITING));
                 break;
             case "REJECTED":
+                bookings.addAll(bookingRepository
+                        .findByBooker_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.REJECTED));
                 break;
             default:
-                throw new BadRequestException("UNSUPPORTED_STATUS");
+                throw new BadRequestException("Unknown state: " + state);
         }
-        return null;
+        return bookings.stream()
+                .map(BookingMapper::toBookingRS)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -110,6 +127,31 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository.findById(ownerId).orElseThrow(() -> {
             throw new NotFoundException("User with id = " + ownerId + " not found");
         });
-        return null;
+        ArrayList<Booking> bookings = new ArrayList<>();
+        switch (state) {
+            case "ALL":
+                bookings.addAll(bookingRepository.findByItem_Owner_IdOrderByStartDesc(ownerId));
+                break;
+            case "CURRENT":
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndEndAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
+                break;
+            case "PAST":
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStartBeforeOrderByStartDesc(ownerId, LocalDateTime.now()));
+                break;
+            case "FUTURE":
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStartAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
+                break;
+            case "WAITING":
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.WAITING));
+                break;
+            case "REJECTED":
+                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.REJECTED));
+                break;
+            default:
+                throw new BadRequestException("Unknown state: " + state);
+        }
+        return bookings.stream()
+                .map(BookingMapper::toBookingRS)
+                .collect(Collectors.toList());
     }
 }
