@@ -91,13 +91,11 @@ public class ItemServiceImpl implements ItemService {
 
         Comment comment = CommentMapper.toComment(user, item, commentDto);
 
-        if (!bookingRepository.findByBooker_IdAndItem_IdAndStartBefore(authorId, itemId, LocalDateTime.now()).isEmpty()) {
-
+        if (bookingRepository.findByBookerIdAndItemIdAndEndBefore(authorId, itemId, LocalDateTime.now()).isPresent()) {
             comment.setItemId(item);
             comment.setAuthorId(user);
             comment.setCreated(LocalDateTime.now());
             commentRepository.save(comment);
-
             return CommentMapper.toCommentDto(comment);
         } else throw new BadRequestException("This User can not send comment to this Item");
     }

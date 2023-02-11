@@ -91,28 +91,22 @@ public class BookingServiceImpl implements BookingService {
         ArrayList<Booking> bookings = new ArrayList<>();
         switch (state) {
             case "ALL":
-                bookings.addAll(bookingRepository
-                        .findAllByBookerIdOrderByStartDesc(ownerId));
+                bookings.addAll(bookingRepository.findAllByBookerIdOrderByStartDesc(ownerId));
                 break;
             case "CURRENT":
-                bookings.addAll(bookingRepository
-                        .findByBooker_IdAndEndAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByBookerCurrent(ownerId, LocalDateTime.now()));
                 break;
             case "PAST":
-                bookings.addAll(bookingRepository
-                        .findByBooker_IdAndStartBeforeOrderByStartDesc(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByBookerPast(ownerId, LocalDateTime.now()));
                 break;
             case "FUTURE":
-                bookings.addAll(bookingRepository
-                        .findByBooker_IdAndStartAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByBookerFuture(ownerId, LocalDateTime.now()));
                 break;
             case "WAITING":
-                bookings.addAll(bookingRepository
-                        .findByBooker_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.WAITING));
+                bookings.addAll(bookingRepository.findByBookerAndStatus(ownerId, BookingStatus.WAITING));
                 break;
             case "REJECTED":
-                bookings.addAll(bookingRepository
-                        .findByBooker_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.REJECTED));
+                bookings.addAll(bookingRepository.findByBookerAndStatus(ownerId, BookingStatus.REJECTED));
                 break;
             default:
                 throw new BadRequestException("Unknown state: " + state);
@@ -130,22 +124,22 @@ public class BookingServiceImpl implements BookingService {
         ArrayList<Booking> bookings = new ArrayList<>();
         switch (state) {
             case "ALL":
-                bookings.addAll(bookingRepository.findByItem_Owner_IdOrderByStartDesc(ownerId));
+                bookings.addAll(bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId));
                 break;
             case "CURRENT":
-                bookings.addAll(bookingRepository.findByItem_Owner_IdAndEndAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerCurrent(ownerId, LocalDateTime.now()));
                 break;
             case "PAST":
-                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStartBeforeOrderByStartDesc(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerPast(ownerId, LocalDateTime.now()));
                 break;
             case "FUTURE":
-                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStartAfterOrderByStartDesc(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerFuture(ownerId, LocalDateTime.now()));
                 break;
             case "WAITING":
-                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.WAITING));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatus(ownerId, BookingStatus.WAITING));
                 break;
             case "REJECTED":
-                bookings.addAll(bookingRepository.findByItem_Owner_IdAndStatusOrderByStatusDesc(ownerId, BookingStatus.REJECTED));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatus(ownerId, BookingStatus.REJECTED));
                 break;
             default:
                 throw new BadRequestException("Unknown state: " + state);
