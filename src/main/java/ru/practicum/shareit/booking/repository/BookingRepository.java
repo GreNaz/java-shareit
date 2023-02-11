@@ -28,10 +28,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by booking.start desc")
     List<Booking> findByBookerPast(long userId, LocalDateTime end);
 
-    @Query("select booking from Booking booking " +
-            "where booking.start > ?2 " +
-            "and booking.booker.id = ?1 " +
-            "order by booking.start desc")
+    @Query("select booking from Booking booking "
+            + "where booking.start > ?2 "
+            + "and booking.booker.id = ?1 "
+            + "order by booking.start desc")
     List<Booking> findByBookerFuture(long userId, LocalDateTime start);
 
     @Query("select booking from Booking booking " +
