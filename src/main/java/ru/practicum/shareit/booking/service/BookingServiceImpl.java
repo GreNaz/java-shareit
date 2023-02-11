@@ -27,7 +27,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoRS create(long userId, Booking booking) {
 
         if (userId == booking.getItem().getOwner().getId()) {
-            throw new BadRequestException("Unable to book your own");
+            throw new NotFoundException("Unable to book your own");
         }
 
         if (Boolean.FALSE.equals(booking.getItem().getAvailable())) {
