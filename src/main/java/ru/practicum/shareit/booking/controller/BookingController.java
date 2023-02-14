@@ -22,9 +22,7 @@ public class BookingController {
     public BookingDtoRS create(
             @RequestHeader(name = "X-Sharer-User-Id") long userId,
             @Validated(Create.class) @RequestBody BookingDtoRQ bookingDtoRQ) {
-
         log.info("Received a request to add a booking");
-
         return bookingService.create(userId, bookingDtoRQ);
     }
 
