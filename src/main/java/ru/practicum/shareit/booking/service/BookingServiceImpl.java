@@ -5,10 +5,13 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.dto.BookingDtoRQ;
 import ru.practicum.shareit.booking.model.dto.BookingDtoRS;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.NotFoundException;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -22,9 +25,18 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Override
-    public BookingDtoRS create(long userId, Booking booking) {
+    public BookingDtoRS create(long userId, BookingDtoRQ bookingDtoRQ) {
+        Item item = itemRepository.findById(bookingDtoRQ.getItemId()).orElseThrow(() -> {
+            throw new NotFoundException("Item with id = " + bookingDtoRQ.getItemId() + " not found");
+        });
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new NotFoundException("User with id = " + userId + " not found");
+        });
+
+        Booking booking = BookingMapper.toBooking(bookingDtoRQ, item, user);
 
         if (userId == booking.getItem().getOwner().getId()) {
             throw new NotFoundException("Unable to book your own");
