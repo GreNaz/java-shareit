@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 public class BookingDtoRQ {
     private long id;
     @FutureOrPresent(groups = Create.class)
-    @NotNull
+    @NotNull(groups = Create.class)
     private LocalDateTime start;
     @Future(groups = Create.class)
-    @NotNull
+    @NotNull(groups = Create.class)
     private LocalDateTime end;
     private long itemId;
     private long bookerId;

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
+    private static final Sort SORT_START_DESC = Sort.by(Sort.Direction.DESC, "start");
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
@@ -106,19 +108,34 @@ public class BookingServiceImpl implements BookingService {
                 bookings.addAll(bookingRepository.findAllByBookerIdOrderByStartDesc(ownerId));
                 break;
             case "CURRENT":
-                bookings.addAll(bookingRepository.findByBookerCurrent(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByBookerCurrent(
+                        ownerId,
+                        LocalDateTime.now(),
+                        SORT_START_DESC));
                 break;
             case "PAST":
-                bookings.addAll(bookingRepository.findByBookerPast(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByBookerPast(
+                        ownerId,
+                        LocalDateTime.now(),
+                        SORT_START_DESC));
                 break;
             case "FUTURE":
-                bookings.addAll(bookingRepository.findByBookerFuture(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByBookerFuture(
+                        ownerId,
+                        LocalDateTime.now(),
+                        SORT_START_DESC));
                 break;
             case "WAITING":
-                bookings.addAll(bookingRepository.findByBookerAndStatus(ownerId, BookingStatus.WAITING));
+                bookings.addAll(bookingRepository.findByBookerAndStatus(
+                        ownerId,
+                        BookingStatus.WAITING,
+                        SORT_START_DESC));
                 break;
             case "REJECTED":
-                bookings.addAll(bookingRepository.findByBookerAndStatus(ownerId, BookingStatus.REJECTED));
+                bookings.addAll(bookingRepository.findByBookerAndStatus(
+                        ownerId,
+                        BookingStatus.REJECTED,
+                        SORT_START_DESC));
                 break;
             default:
                 throw new BadRequestException("Unknown state: " + state);
@@ -136,22 +153,39 @@ public class BookingServiceImpl implements BookingService {
         ArrayList<Booking> bookings = new ArrayList<>();
         switch (state) {
             case "ALL":
-                bookings.addAll(bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId));
+                bookings.addAll(bookingRepository.findByItemOwnerId(
+                        ownerId,
+                        SORT_START_DESC));
                 break;
             case "CURRENT":
-                bookings.addAll(bookingRepository.findByItemOwnerCurrent(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerCurrent(
+                        ownerId,
+                        LocalDateTime.now(),
+                        SORT_START_DESC));
                 break;
             case "PAST":
-                bookings.addAll(bookingRepository.findByItemOwnerPast(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerPast(
+                        ownerId,
+                        LocalDateTime.now(),
+                        SORT_START_DESC));
                 break;
             case "FUTURE":
-                bookings.addAll(bookingRepository.findByItemOwnerFuture(ownerId, LocalDateTime.now()));
+                bookings.addAll(bookingRepository.findByItemOwnerFuture(
+                        ownerId,
+                        LocalDateTime.now(),
+                        SORT_START_DESC));
                 break;
             case "WAITING":
-                bookings.addAll(bookingRepository.findByItemOwnerAndStatus(ownerId, BookingStatus.WAITING));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatus(
+                        ownerId,
+                        BookingStatus.WAITING,
+                        SORT_START_DESC));
                 break;
             case "REJECTED":
-                bookings.addAll(bookingRepository.findByItemOwnerAndStatus(ownerId, BookingStatus.REJECTED));
+                bookings.addAll(bookingRepository.findByItemOwnerAndStatus(
+                        ownerId,
+                        BookingStatus.REJECTED,
+                        SORT_START_DESC));
                 break;
             default:
                 throw new BadRequestException("Unknown state: " + state);

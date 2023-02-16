@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,76 +17,68 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBookerIdOrderByStartDesc(long userId);
 
     @Query("select booking from Booking booking " +
-            "where booking.start < ?2 " +
-            "and booking.end > ?2 " +
-            "and booking.booker.id = ?1 " +
-            "order by booking.start")
-    List<Booking> findByBookerCurrent(long userId, LocalDateTime now);
+            "where ?2 between booking.start " +
+            "and booking.end " +
+            "and booking.booker.id = ?1 ")
+    List<Booking> findByBookerCurrent(long userId, LocalDateTime now, Sort sort);
 
     @Query("select booking from Booking booking " +
             "where booking.end < ?2 " +
-            "and booking.booker.id = ?1 " +
-            "order by booking.start desc")
-    List<Booking> findByBookerPast(long userId, LocalDateTime end);
+            "and booking.booker.id = ?1 ")
+    List<Booking> findByBookerPast(long userId, LocalDateTime end, Sort sort);
 
     @Query("select booking from Booking booking "
             + "where booking.start > ?2 "
-            + "and booking.booker.id = ?1 "
-            + "order by booking.start desc")
-    List<Booking> findByBookerFuture(long userId, LocalDateTime start);
+            + "and booking.booker.id = ?1 ")
+    List<Booking> findByBookerFuture(long userId, LocalDateTime start, Sort sort);
 
     @Query("select booking from Booking booking " +
             "where booking.status = ?2 " +
-            "and booking.booker.id = ?1 " +
-            "order by booking.status desc")
-    List<Booking> findByBookerAndStatus(long userId, BookingStatus status);
+            "and booking.booker.id = ?1 ")
+    List<Booking> findByBookerAndStatus(long userId, BookingStatus status, Sort sort);
 
-    List<Booking> findByItemOwnerIdOrderByStartDesc(long ownerId);
+    List<Booking> findByItemOwnerId(long ownerId, Sort sort);
 
     @Query("select booking from Booking booking " +
-            "where booking.start < ?2 " +
-            "and booking.end > ?2 " +
-            "and booking.item.owner.id = ?1 " +
-            "order by booking.start")
-    List<Booking> findByItemOwnerCurrent(long userId, LocalDateTime now);
+            "where ?2 between booking.start " +
+            "and booking.end " +
+            "and booking.item.owner.id = ?1 ")
+    List<Booking> findByItemOwnerCurrent(long userId, LocalDateTime now, Sort sort);
 
     @Query("select booking from Booking booking " +
             "where booking.end < ?2 " +
-            "and booking.item.owner.id = ?1 " +
-            "order by booking.start desc")
-    List<Booking> findByItemOwnerPast(long userId, LocalDateTime end);
+            "and booking.item.owner.id = ?1 ")
+    List<Booking> findByItemOwnerPast(long userId, LocalDateTime end, Sort sort);
 
     @Query("select booking from Booking booking " +
             "where booking.start > ?2 " +
-            "and booking.item.owner.id = ?1 " +
-            "order by booking.start desc")
-    List<Booking> findByItemOwnerFuture(long userId, LocalDateTime start);
+            "and booking.item.owner.id = ?1 ")
+    List<Booking> findByItemOwnerFuture(long userId, LocalDateTime start, Sort sort);
 
     @Query("select booking from Booking booking " +
             "where booking.status = ?2 " +
-            "and booking.item.owner.id = ?1 " +
-            "order by booking.status desc")
-    List<Booking> findByItemOwnerAndStatus(long userId, BookingStatus status);
+            "and booking.item.owner.id = ?1 ")
+    List<Booking> findByItemOwnerAndStatus(long userId, BookingStatus status, Sort sort);
 
-    Optional<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime end);
+    Optional<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime end, Sort sort);
 
     @Query("select distinct booking " +
             "from Booking booking " +
-            "where booking.end < :now " +
+            "where booking.start <= :now " +
             "and booking.item.id in :ids " +
-            "and booking.item.owner.id = :userId " +
-            "order by booking.start asc ")
+            "and booking.item.owner.id = :userId ")
     List<Booking> findBookingsLast(@Param("ids") List<Long> ids,
                                    @Param("now") LocalDateTime now,
-                                   @Param("userId") long userId);
+                                   @Param("userId") long userId,
+                                   Sort sort);
 
     @Query("select distinct booking " +
             "from Booking booking " +
             "where booking.start > :now " +
             "and booking.item.id in :ids " +
-            "and booking.item.owner.id = :userId " +
-            "order by booking.start asc ")
+            "and booking.item.owner.id = :userId ")
     List<Booking> findBookingsNext(@Param("ids") List<Long> ids,
                                    @Param("now") LocalDateTime now,
-                                   @Param("userId") long userId);
+                                   @Param("userId") long userId,
+                                   Sort sort);
 }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
+    private static final Sort SORT_START_DESC = Sort.by(Sort.Direction.DESC, "start");
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -91,7 +93,11 @@ public class ItemServiceImpl implements ItemService {
 
         Comment comment = CommentMapper.toComment(user, item, commentDto);
 
-        if (bookingRepository.findByBookerIdAndItemIdAndEndBefore(authorId, itemId, LocalDateTime.now()).isPresent()) {
+        if (bookingRepository.findByBookerIdAndItemIdAndEndBefore(
+                authorId,
+                itemId,
+                LocalDateTime.now(),
+                SORT_START_DESC).isPresent()) {
             comment.setItemId(item);
             comment.setAuthorId(user);
             comment.setCreated(LocalDateTime.now());
@@ -118,7 +124,11 @@ public class ItemServiceImpl implements ItemService {
                 .map(Item::getId)
                 .collect(Collectors.toList());
 
-        List<Booking> bookings = bookingRepository.findBookingsLast(ids, LocalDateTime.now(), userId);
+        List<Booking> bookings = bookingRepository.findBookingsLast(
+                ids,
+                LocalDateTime.now(),
+                userId,
+                SORT_START_DESC);
 
         Map<Long, ItemDtoBooking> itemsMap = items.stream()
                 .map(ItemMapper::toItemDtoBooking)
@@ -127,7 +137,11 @@ public class ItemServiceImpl implements ItemService {
         bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
                 .setLastBooking(BookingMapper.toBookingDto(booking)));
 
-        bookings = bookingRepository.findBookingsNext(ids, LocalDateTime.now(), userId);
+        bookings = bookingRepository.findBookingsNext(
+                ids,
+                LocalDateTime.now(),
+                userId,
+                SORT_START_DESC);
 
         bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
                 .setNextBooking(BookingMapper.toBookingDto(booking)));
