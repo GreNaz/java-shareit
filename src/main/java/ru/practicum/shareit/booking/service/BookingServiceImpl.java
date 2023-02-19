@@ -55,7 +55,6 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(BookingStatus.WAITING);
         return BookingMapper.toBookingRS(bookingRepository.save(booking));
-//        return BookingMapper.toBookingRS(booking);
     }
 
     @Override

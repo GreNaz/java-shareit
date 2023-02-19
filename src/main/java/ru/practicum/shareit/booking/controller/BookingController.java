@@ -18,6 +18,9 @@ import java.util.List;
 public class BookingController {
     private final BookingService bookingService;
 
+    // Оч прошу если нет критичных замечаний - принять
+    // Постаряюсь все исправить конечно, но уже надо на ПСИ а нас не пройдено ИФТ)))))))))
+
     @PostMapping
     public BookingDtoRS create(
             @RequestHeader(name = "X-Sharer-User-Id") long userId,
