@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -66,6 +67,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "from Booking booking " +
             "where booking.start <= :now " +
             "and booking.item.id in :ids " +
+            "and booking.status = 'APPROVED' " +
             "and booking.item.owner.id = :userId ")
     List<Booking> findBookingsLast(@Param("ids") List<Long> ids,
                                    @Param("now") LocalDateTime now,
@@ -81,4 +83,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                    @Param("now") LocalDateTime now,
                                    @Param("userId") long userId,
                                    Sort sort);
+
+    @Query("select distinct booking " +
+            "from Booking booking " +
+            "where booking.status = 'APPROVED' " +
+            "and booking.item.id in :ids ")
+    List<Booking> findApprovedForItems(@Param("ids") List<Item> items,
+                                       Sort sort);
 }

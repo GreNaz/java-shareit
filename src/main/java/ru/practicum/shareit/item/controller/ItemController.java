@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.model.dto.CommentDto;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.model.dto.ItemDtoBooking;
-import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.Collections;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
-    private final CommentRepository commentRepository;
     private final ItemService itemService;
 
     @PostMapping

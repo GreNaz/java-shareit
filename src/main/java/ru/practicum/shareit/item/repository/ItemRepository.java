@@ -10,6 +10,9 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
+    @Query("select i from Item i where i.owner.id = ?1")
+    List<Item> findByOwner_Id(Long id);
+
     @Query("select item from Item item " +
             "where item.available = true " +
             "and (lower(item.name) like %?1% " +

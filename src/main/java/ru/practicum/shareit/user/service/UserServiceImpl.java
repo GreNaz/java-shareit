@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapper;
@@ -35,7 +34,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(User user) {
-//        checkUserExist(user); Очень странно что для тестов надо убрать эту проверку
         return UserMapper.toUserDto(userRepository.save(user));
     }
 
@@ -45,15 +43,12 @@ public class UserServiceImpl implements UserService {
                 -> new NotFoundException("User with id = " + id + " not found"));
 
         if (!Objects.isNull(user.getEmail())
-                && !user.getEmail().isBlank()
-                && !userInMem.getEmail().equals(user.getEmail())) {
-            checkUserExist(user);
+                && !user.getEmail().isBlank()) {
             userInMem.setEmail(user.getEmail());
         }
         if (!Objects.isNull(user.getName()) && !user.getName().isBlank()) {
             userInMem.setName(user.getName());
         }
-        userRepository.save(userInMem);
 
         return UserMapper.toUserDto(userInMem);
     }
@@ -61,11 +56,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(long id) {
         userRepository.deleteById(id);
-    }
-
-    private void checkUserExist(User user) {
-        if (userRepository.findAll().contains(user)) {
-            throw new ConflictException("User with email = " + user.getEmail() + " already exist");
-        }
     }
 }

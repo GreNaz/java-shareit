@@ -2,7 +2,9 @@ package ru.practicum.shareit.booking.model.dto;
 
 import lombok.*;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.model.validation.StartBeforeEndDateValid;
 import ru.practicum.shareit.error.validation.Create;
+import ru.practicum.shareit.error.validation.Update;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@StartBeforeEndDateValid(groups = {Create.class, Update.class})
 public class BookingDtoRQ {
     private long id;
     @FutureOrPresent(groups = Create.class)

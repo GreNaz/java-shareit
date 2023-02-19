@@ -7,7 +7,6 @@ import lombok.Setter;
 import ru.practicum.shareit.error.validation.Create;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CommentDto {
     private Long id;
-    @NotNull(groups = Create.class)
     @NotBlank(groups = Create.class)
     private String text;
     private String authorName;

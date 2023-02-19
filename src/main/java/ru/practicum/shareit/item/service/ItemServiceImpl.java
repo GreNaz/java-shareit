@@ -27,10 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private static final Sort SORT_START_DESC = Sort.by(Sort.Direction.DESC, "start");
+    private static final Sort SORT_START_DESC = Sort.by(DESC, "start");
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -38,11 +41,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoBooking> getUserItems(long userId) {
-        //get all user items
-        List<Item> userItems = itemRepository.findAll().stream()
-                .filter(item -> item.getOwner().getId() == userId)
-                .collect(Collectors.toList());
-
+        List<Item> userItems = itemRepository.findByOwner_Id(userId);
         return setAllBookingsAndComments(userId, userItems);
     }
 
@@ -110,7 +109,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> search(String text) {
         return itemRepository.searchByText(text.toLowerCase()).stream()
                 .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -120,20 +119,24 @@ public class ItemServiceImpl implements ItemService {
 
     private List<ItemDtoBooking> setAllBookingsAndComments(long userId, List<Item> items) {
 
+        //вытаскиваем айдишники наших предметов
         List<Long> ids = items.stream()
                 .map(Item::getId)
-                .collect(Collectors.toList());
+                .collect(toList());
 
+        //вытаскиваем все начавшиеся бронирования
         List<Booking> bookings = bookingRepository.findBookingsLast(
                 ids,
                 LocalDateTime.now(),
                 userId,
                 SORT_START_DESC);
 
+        //мапим все наши предметы по айди в ДТО
         Map<Long, ItemDtoBooking> itemsMap = items.stream()
                 .map(ItemMapper::toItemDtoBooking)
-                .collect(Collectors.toMap(ItemDtoBooking::getId, film -> film, (a, b) -> b));
+                .collect(Collectors.toMap(ItemDtoBooking::getId, x -> x, (a, b) -> b));
 
+        // для всех начавшихся бронирований сетим последнее бронировнаие
         bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
                 .setLastBooking(BookingMapper.toBookingDto(booking)));
 
