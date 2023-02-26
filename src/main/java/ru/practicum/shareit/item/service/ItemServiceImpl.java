@@ -92,11 +92,11 @@ public class ItemServiceImpl implements ItemService {
 
         Comment comment = CommentMapper.toComment(user, item, commentDto);
 
-        if (bookingRepository.findByBookerIdAndItemIdAndEndBefore(
+        if (!bookingRepository.findByBookerIdAndItemIdAndEndBefore(
                 authorId,
                 itemId,
                 LocalDateTime.now(),
-                SORT_START_DESC).isPresent()) {
+                SORT_START_DESC).isEmpty()) {
             comment.setItemId(item);
             comment.setAuthorId(user);
             comment.setCreated(LocalDateTime.now());

@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -61,7 +60,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "and booking.item.owner.id = ?1 ")
     List<Booking> findByItemOwnerAndStatus(long userId, BookingStatus status, Sort sort);
 
-    Optional<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime end, Sort sort);
+    List<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime end, Sort sort);
 
     @Query("select distinct booking " +
             "from Booking booking " +
@@ -77,6 +76,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select distinct booking " +
             "from Booking booking " +
             "where booking.start > :now " +
+            "and booking.status = 'APPROVED' " +
             "and booking.item.id in :ids " +
             "and booking.item.owner.id = :userId ")
     List<Booking> findBookingsNext(@Param("ids") List<Long> ids,
