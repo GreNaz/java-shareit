@@ -97,7 +97,7 @@ public class ItemServiceImpl implements ItemService {
                 itemId,
                 LocalDateTime.now(),
                 SORT_START_DESC).isEmpty()) {
-            comment.setItemId(item);
+            comment.setItem(item);
             comment.setAuthorId(user);
             comment.setCreated(LocalDateTime.now());
             commentRepository.save(comment);
@@ -119,40 +119,27 @@ public class ItemServiceImpl implements ItemService {
 
     private List<ItemDtoBooking> setAllBookingsAndComments(long userId, List<Item> items) {
 
-        //вытаскиваем айдишники наших предметов
-        List<Long> ids = items.stream()
-                .map(Item::getId)
-                .collect(toList());
+        LocalDateTime now = LocalDateTime.now();
 
-        //вытаскиваем все начавшиеся бронирования
-        List<Booking> bookings = bookingRepository.findBookingsLast(
-                ids,
-                LocalDateTime.now(),
-                userId,
-                SORT_START_DESC);
+        List<Long> ids = items.stream().map(Item::getId).collect(toList());
 
-        //мапим все наши предметы по айди в ДТО
+        List<Booking> bookings = bookingRepository.findBookingsLast(ids, now, userId, SORT_START_DESC);
+
         Map<Long, ItemDtoBooking> itemsMap = items.stream()
                 .map(ItemMapper::toItemDtoBooking)
                 .collect(Collectors.toMap(ItemDtoBooking::getId, x -> x, (a, b) -> b));
 
-        // для всех начавшихся бронирований сетим последнее бронировнаие
         bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
                 .setLastBooking(BookingMapper.toBookingDtoResponse(booking)));
 
-        bookings = bookingRepository.findBookingsNext(
-                ids,
-                LocalDateTime.now(),
-                userId,
-                SORT_START_DESC);
+        bookings = bookingRepository.findBookingsNext(ids, now, userId, SORT_START_DESC);
 
         bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
                 .setNextBooking(BookingMapper.toBookingDtoResponse(booking)));
 
         List<Comment> comments = commentRepository.findByItemId_IdIn(ids);
 
-        comments.forEach(comment -> itemsMap.get(comment.getItemId().getId())
-                .getComments().add(CommentMapper.toCommentDto(comment)));
+        comments.forEach(comment -> itemsMap.get(comment.getItem().getId()).getComments().add(CommentMapper.toCommentDto(comment)));
 
         return new ArrayList<>(itemsMap.values());
     }
