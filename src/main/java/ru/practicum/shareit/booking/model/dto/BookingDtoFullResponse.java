@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDtoRS {
+public class BookingDtoFullResponse {
     private long id;
     private LocalDateTime start;
     private LocalDateTime end;

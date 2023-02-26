@@ -138,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
 
         // для всех начавшихся бронирований сетим последнее бронировнаие
         bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
-                .setLastBooking(BookingMapper.toBookingDto(booking)));
+                .setLastBooking(BookingMapper.toBookingDtoResponse(booking)));
 
         bookings = bookingRepository.findBookingsNext(
                 ids,
@@ -147,7 +147,7 @@ public class ItemServiceImpl implements ItemService {
                 SORT_START_DESC);
 
         bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
-                .setNextBooking(BookingMapper.toBookingDto(booking)));
+                .setNextBooking(BookingMapper.toBookingDtoResponse(booking)));
 
         List<Comment> comments = commentRepository.findByItemId_IdIn(ids);
 

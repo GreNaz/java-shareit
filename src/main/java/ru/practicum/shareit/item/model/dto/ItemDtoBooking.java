@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.shareit.booking.model.dto.BookingDtoRQ;
+import ru.practicum.shareit.booking.model.dto.BookingDtoResponse;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class ItemDtoBooking {
     private String name;
     private String description;
     private Boolean available;
-    private BookingDtoRQ lastBooking;
-    private BookingDtoRQ nextBooking;
+    private BookingDtoResponse lastBooking;
+    private BookingDtoResponse nextBooking;
     private List<CommentDto> comments;
 }

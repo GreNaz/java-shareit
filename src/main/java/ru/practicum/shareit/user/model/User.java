@@ -14,7 +14,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "USERS")
 public class User {
-    //Поле registrationDate в UserDto представьте в виде строки с датой в формате yyyy.MM.dd, hh:mm:ss.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

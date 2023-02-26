@@ -8,8 +8,8 @@ import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.dto.BookingDtoRQ;
-import ru.practicum.shareit.booking.model.dto.BookingDtoRS;
+import ru.practicum.shareit.booking.model.dto.BookingDtoCreate;
+import ru.practicum.shareit.booking.model.dto.BookingDtoFullResponse;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.NotFoundException;
@@ -33,17 +33,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoRS create(long userId, BookingDtoRQ bookingDtoRQ) {
+    public BookingDtoFullResponse create(long userId, BookingDtoCreate bookingDtoCreate) {
 
-        Item item = itemRepository.findById(bookingDtoRQ.getItemId()).orElseThrow(() -> {
-            throw new NotFoundException("Item with id = " + bookingDtoRQ.getItemId() + " not found");
+        Item item = itemRepository.findById(bookingDtoCreate.getItemId()).orElseThrow(() -> {
+            throw new NotFoundException("Item with id = " + bookingDtoCreate.getItemId() + " not found");
         });
 
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("User with id = " + userId + " not found");
         });
 
-        Booking booking = BookingMapper.toBooking(bookingDtoRQ, item, user);
+        Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
 
         if (userId == booking.getItem().getOwner().getId()) {
             throw new NotFoundException("Unable to book your own");
@@ -59,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoRS update(long bookingId, long ownerId, boolean approved) {
+    public BookingDtoFullResponse update(long bookingId, long ownerId, boolean approved) {
 
         User user = userRepository.findById(ownerId).orElseThrow(() -> {
             throw new NotFoundException("User with id = " + ownerId + " not found");
@@ -89,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookingDtoRS get(long bookingId, long ownerId) {
+    public BookingDtoFullResponse get(long bookingId, long ownerId) {
 
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(()
                 -> new NotFoundException("Booking with id " + bookingId + " was not found"));
@@ -104,7 +104,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDtoRS> getBookings(long ownerId, String state) {
+    public List<BookingDtoFullResponse> getBookings(long ownerId, String state) {
 
         validStateAndUser(ownerId, state);
 
@@ -154,7 +154,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDtoRS> getBookingFromOwner(long ownerId, String state) {
+    public List<BookingDtoFullResponse> getBookingFromOwner(long ownerId, String state) {
 
         validStateAndUser(ownerId, state);
 
