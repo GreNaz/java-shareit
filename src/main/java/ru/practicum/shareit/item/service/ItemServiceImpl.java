@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
-import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.NotFoundException;
@@ -27,13 +27,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private static final Sort SORT_START_DESC = Sort.by(DESC, "start");
+    private static final Sort SORT_START_ASC = Sort.by(ASC, "start");
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -118,29 +121,27 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private List<ItemDtoBooking> setAllBookingsAndComments(long userId, List<Item> items) {
-
         LocalDateTime now = LocalDateTime.now();
-
-        List<Long> ids = items.stream().map(Item::getId).collect(toList());
-
-        List<Booking> bookings = bookingRepository.findBookingsLast(ids, now, userId, SORT_START_DESC);
-
-        Map<Long, ItemDtoBooking> itemsMap = items.stream()
+        List<Long> ids = items.stream()
+                .map(Item::getId)
+                .collect(Collectors.toList());
+        Map<Long, BookingDtoResponse> last = bookingRepository.findBookingsLast(ids, now, userId, SORT_START_DESC).stream()
+                .map(BookingMapper::toBookingDtoResponse)
+                .collect(Collectors.toMap(BookingDtoResponse::getItemId, item -> item, (a, b) -> b));
+        Map<Long, BookingDtoResponse> next = bookingRepository.findBookingsNext(ids, now, userId, SORT_START_ASC).stream()
+                .map(BookingMapper::toBookingDtoResponse)
+                .collect(Collectors.toMap(BookingDtoResponse::getItemId, item -> item, (a, b) -> b));
+        List<ItemDtoBooking> result = items.stream()
                 .map(ItemMapper::toItemDtoBooking)
-                .collect(Collectors.toMap(ItemDtoBooking::getId, x -> x, (a, b) -> b));
-
-        bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
-                .setLastBooking(BookingMapper.toBookingDtoResponse(booking)));
-
-        bookings = bookingRepository.findBookingsNext(ids, now, userId, SORT_START_DESC);
-
-        bookings.forEach(booking -> itemsMap.get(booking.getItem().getId())
-                .setNextBooking(BookingMapper.toBookingDtoResponse(booking)));
-
-        List<Comment> comments = commentRepository.findByItemId_IdIn(ids);
-
-        comments.forEach(comment -> itemsMap.get(comment.getItem().getId()).getComments().add(CommentMapper.toCommentDto(comment)));
-
-        return new ArrayList<>(itemsMap.values());
+                .collect(toList());
+        Map<Long, List<Comment>> comments = commentRepository.findByItemId_IdIn(ids).stream()
+                .collect(groupingBy(comment -> comment.getItem().getId()));
+        result.forEach(item -> {
+            item.setLastBooking(last.getOrDefault(item.getId(), null));
+            item.setNextBooking(next.getOrDefault(item.getId(), null));
+            item.getComments().addAll(comments.getOrDefault(item.getId(), new ArrayList<>()).stream()
+                    .map(CommentMapper::toCommentDto).collect(toList()));
+        });
+        return result;
     }
 }
