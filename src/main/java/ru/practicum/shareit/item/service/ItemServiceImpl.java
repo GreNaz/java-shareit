@@ -128,7 +128,7 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, BookingDtoResponse> last = bookingRepository.findBookingsLast(ids, now, userId, SORT_START_DESC).stream()
                 .map(BookingMapper::toBookingDtoResponse)
                 .collect(Collectors.toMap(BookingDtoResponse::getItemId, item -> item, (a, b) -> b));
-        Map<Long, BookingDtoResponse> next = bookingRepository.findBookingsNext(ids, now, userId, SORT_START_ASC).stream()
+        Map<Long, BookingDtoResponse> next = bookingRepository.findBookingsNext(ids, now, userId, SORT_START_DESC).stream()
                 .map(BookingMapper::toBookingDtoResponse)
                 .collect(Collectors.toMap(BookingDtoResponse::getItemId, item -> item, (a, b) -> b));
         List<ItemDtoBooking> result = items.stream()

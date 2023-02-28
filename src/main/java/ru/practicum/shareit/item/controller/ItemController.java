@@ -45,7 +45,6 @@ public class ItemController {
             @RequestHeader(name = "X-Sharer-User-Id") long authorId) {
         log.info("Received a request to update the item");
         return itemService.createComment(itemId, commentDto, authorId);
-//        пользователи смогут оставлять отзывы на вещь после того, как взяли её в аренду
     }
 
     @GetMapping
