@@ -37,8 +37,16 @@ public class BookingMapper {
                 .start(booking.getStart())
                 .end(booking.getEnd())
                 .status(booking.getStatus())
-                .item(booking.getItem())
-                .booker(booking.getBooker())
+                .item(toItemDto(booking.getItem()))
+                .booker(toBookerDto(booking.getBooker()))
                 .build();
+    }
+
+    private static BookingDtoFullResponse.Item toItemDto(Item item) {
+        return new BookingDtoFullResponse.Item(item.getId(), item.getName());
+    }
+
+    private static BookingDtoFullResponse.Booker toBookerDto(User user) {
+        return new BookingDtoFullResponse.Booker(user.getId(), user.getName());
     }
 }
