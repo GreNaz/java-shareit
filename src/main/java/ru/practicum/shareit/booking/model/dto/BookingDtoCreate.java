@@ -7,7 +7,6 @@ import ru.practicum.shareit.error.validation.Update;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,10 +18,8 @@ import java.time.LocalDateTime;
 public class BookingDtoCreate {
     private long id;
     @FutureOrPresent(groups = Create.class)
-    @NotNull(groups = Create.class)
     private LocalDateTime start;
     @Future(groups = Create.class)
-    @NotNull(groups = Create.class)
     private LocalDateTime end;
     private long itemId;
 }

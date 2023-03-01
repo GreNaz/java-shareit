@@ -21,7 +21,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +28,12 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private static final Sort SORT_START_DESC = Sort.by(DESC, "start");
-    private static final Sort SORT_START_ASC = Sort.by(ASC, "start");
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -127,7 +124,7 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
         Map<Long, BookingDtoResponse> last = bookingRepository.findBookingsLast(ids, now, userId, SORT_START_DESC).stream()
                 .map(BookingMapper::toBookingDtoResponse)
-                .collect(Collectors.toMap(BookingDtoResponse::getItemId, item -> item, (a, b) -> b));
+                .collect(Collectors.toMap(BookingDtoResponse::getItemId, item -> item, (a, b) -> a));
         Map<Long, BookingDtoResponse> next = bookingRepository.findBookingsNext(ids, now, userId, SORT_START_DESC).stream()
                 .map(BookingMapper::toBookingDtoResponse)
                 .collect(Collectors.toMap(BookingDtoResponse::getItemId, item -> item, (a, b) -> b));
@@ -137,9 +134,9 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, List<Comment>> comments = commentRepository.findByItemId_IdIn(ids).stream()
                 .collect(groupingBy(comment -> comment.getItem().getId()));
         result.forEach(item -> {
-            item.setLastBooking(last.getOrDefault(item.getId(), null));
-            item.setNextBooking(next.getOrDefault(item.getId(), null));
-            item.getComments().addAll(comments.getOrDefault(item.getId(), new ArrayList<>()).stream()
+            item.setLastBooking(last.get(item.getId()));
+            item.setNextBooking(next.get(item.getId()));
+            item.getComments().addAll(comments.getOrDefault(item.getId(), List.of()).stream()
                     .map(CommentMapper::toCommentDto).collect(toList()));
         });
         return result;

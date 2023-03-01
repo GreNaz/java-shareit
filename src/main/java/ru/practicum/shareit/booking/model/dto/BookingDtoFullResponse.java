@@ -2,11 +2,7 @@ package ru.practicum.shareit.booking.model.dto;
 
 import lombok.*;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,7 +15,18 @@ public class BookingDtoFullResponse {
     private LocalDateTime start;
     private LocalDateTime end;
     private Item item;
-    private User booker;
-    @Enumerated(EnumType.STRING)
+    private Booker booker;
     private BookingStatus status;
+
+    @Data
+    public static class Booker {
+        private final long id;
+        private final String name;
+    }
+
+    @Data
+    public static class Item {
+        private final long id;
+        private final String name;
+    }
 }
