@@ -1,22 +1,43 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import ru.practicum.shareit.request.model.ItemRequest;
+import lombok.*;
+import org.hibernate.Hibernate;
+import ru.practicum.shareit.user.model.User;
 
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "items")
 public class Item {
-
-    private long id;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true, length = 16)
     private String name;
     private String description;
     private Boolean available;
-    private long owner;
-    private ItemRequest request;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+//    private Request request;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Item item = (Item) o;
+        return id != null && Objects.equals(id, item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
