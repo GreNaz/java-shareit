@@ -45,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoBooking> getUserItems(long userId, Pageable pageable) {
-        List<Item> userItems = itemRepository.findByOwner_Id(userId);
+        List<Item> userItems = itemRepository.findAllByOwnerIdOrderByIdAsc(userId, pageable);
         return setAllBookingsAndComments(userId, userItems);
     }
 
@@ -113,7 +113,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String text, Pageable pageable) {
-        if (text.isBlank()) return Collections.emptyList();
         return itemRepository.searchByText(text.toLowerCase(), pageable)
                 .stream()
                 .map(ItemMapper::toItemDto)

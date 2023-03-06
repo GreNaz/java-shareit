@@ -11,15 +11,14 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    @Query("select i from Item i where i.owner.id = ?1 " +
-            "order by i.id")
-    List<Item> findByOwner_Id(Long id);
+    List<Item> findAllByOwnerIdOrderByIdAsc(long userId, Pageable pageable);
+
 
     @Query("select item from Item item " +
             "where item.available = true " +
             "and (lower(item.name) like %?1% " +
             "or lower(item.description) like %?1%)")
-    List<Item> searchByText(@Param("text") String text, Pageable pageable);
+    List<Item> searchByText(String text, Pageable pageable);
 
     @Query("select item from Item item " +
             "where item.itemRequest.id in :ids")
