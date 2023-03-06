@@ -74,19 +74,19 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private List<ItemRequestDtoRS> setItemsToRequests(List<ItemRequestDtoRS> itemRequestDtoRS) {
-
         Map<Long, ItemRequestDtoRS> requests = itemRequestDtoRS.stream()
-                .collect(Collectors.toMap(ItemRequestDtoRS::getId, a -> a, (a, b) -> b));
-
+                .collect(Collectors.toMap(ItemRequestDtoRS::getId, x -> x, (a, b) -> b));
         List<Long> ids = requests.values().stream()
                 .map(ItemRequestDtoRS::getId)
                 .collect(Collectors.toList());
-
         List<ItemDto> items = itemRepository.searchByRequestsId(ids).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
 
-        items.forEach(itemDto -> requests.get(itemDto.getRequestId()).getItems().add(itemDto));
+        items.forEach(itemDto -> {
+            long id = itemDto.getRequestId();
+            requests.get(id).getItems().add(itemDto);
+        });
 
         return new ArrayList<>(requests.values());
     }

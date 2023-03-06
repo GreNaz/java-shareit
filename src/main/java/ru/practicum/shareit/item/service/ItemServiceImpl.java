@@ -62,6 +62,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("User not found");
         });
+
         ItemRequest itemRequest = null;
         if (itemDto.getRequestId() != null) {
             itemRequest = itemRequestRepository.findById(itemDto.getRequestId()).orElseThrow(() ->

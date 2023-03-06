@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.error.validation.Create;
 
 import javax.validation.constraints.NotBlank;
@@ -13,14 +10,16 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class ItemDto {
     private long id;
     @NotBlank(groups = Create.class)
-    private final String name;
+    private String name;
     @NotBlank(groups = Create.class)
-    private final String description;
+    private String description;
     @NotNull(groups = Create.class)
-    private final Boolean available;
+    private Boolean available;
     private Long requestId;
 
 }
