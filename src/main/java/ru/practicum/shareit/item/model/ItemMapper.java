@@ -4,24 +4,34 @@ package ru.practicum.shareit.item.model;
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.model.dto.ItemDtoBooking;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 
 @UtilityClass
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
+        Long requestId = null;
+
+        if (item.getItemRequest() != null) {
+            requestId = item.getItemRequest().getId();
+        }
+
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(requestId)
                 .build();
     }
 
-    public static Item toItem(ItemDto itemDto) {
+    public static Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
+                .owner(user)
                 .available(itemDto.getAvailable())
                 .build();
     }

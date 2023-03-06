@@ -14,11 +14,13 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 public class ItemDto {
-    private final long id;
+    private long id;
     @NotBlank(groups = Create.class)
     private final String name;
     @NotBlank(groups = Create.class)
     private final String description;
     @NotNull(groups = Create.class)
     private final Boolean available;
+    private Long requestId;
+
 }
