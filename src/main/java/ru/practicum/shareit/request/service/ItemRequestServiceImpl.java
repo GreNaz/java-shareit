@@ -51,10 +51,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public ItemRequestDtoRS getInfo(long userId, long requestId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
-
         ItemRequest itemRequest = requestRepository.findById(requestId).orElseThrow(() ->
                 new NotFoundException("Request not found"));
-
         List<ItemDto> items = itemRepository.findByItemRequestId(requestId).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
@@ -79,15 +77,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<Long> ids = requests.values().stream()
                 .map(ItemRequestDtoRS::getId)
                 .collect(Collectors.toList());
-        List<ItemDto> items = itemRepository.searchByRequestsId(ids).stream()
+        List<ItemDto> itemDtos = itemRepository.searchByRequestsId(ids).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
-
-        items.forEach(itemDto -> {
-            long id = itemDto.getRequestId();
-            requests.get(id).getItems().add(itemDto);
-        });
-
+        itemDtos.forEach(itemDto -> requests.get(itemDto.getRequestId()).getItems().add(itemDto));
         return new ArrayList<>(requests.values());
     }
 }

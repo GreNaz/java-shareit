@@ -5,7 +5,7 @@ import ru.practicum.shareit.request.model.dto.ItemRequestDtoRQ;
 import ru.practicum.shareit.request.model.dto.ItemRequestDtoRS;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.Collections;
+import java.util.ArrayList;
 
 @UtilityClass
 public class ItemRequestMapper {
@@ -17,22 +17,13 @@ public class ItemRequestMapper {
                 .build();
     }
 
-//    public static ItemRequestDtoRQ toItemRequestDtoRQ(ItemRequest itemRequest) {
-//        return ItemRequestDtoRQ.builder()
-//                .id(itemRequest.getId())
-//                .requesterId(itemRequest.getRequester().getId())
-//                .description(itemRequest.getDescription())
-//                .created(itemRequest.getCreated())
-//                .build();
-//    }
-
     public static ItemRequestDtoRS toItemRequestDtoRS(ItemRequest itemRequest) {
         return ItemRequestDtoRS.builder()
                 .id(itemRequest.getId())
                 .requesterId(itemRequest.getRequester().getId())
                 .description(itemRequest.getDescription())
                 .created(itemRequest.getCreated())
-                .items(Collections.emptyList())
+                .items(new ArrayList<>())
                 .build();
     }
 }
