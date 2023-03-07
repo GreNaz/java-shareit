@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDtoFullResponse> getBookings(long ownerId, String state) {
+    public List<BookingDtoFullResponse> getBookings(long ownerId, String state, PageRequest pageRequest) {
 
         validStateAndUser(ownerId, state);
 
@@ -112,37 +113,42 @@ public class BookingServiceImpl implements BookingService {
 
         switch (BookingState.valueOf(state)) {
             case ALL:
-                bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(ownerId);
+                bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(ownerId, pageRequest);
                 break;
             case CURRENT:
                 bookings = bookingRepository.findByBookerCurrent(
                         ownerId,
                         LocalDateTime.now(),
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case PAST:
                 bookings = bookingRepository.findByBookerPast(
                         ownerId,
                         LocalDateTime.now(),
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case FUTURE:
                 bookings = bookingRepository.findByBookerFuture(
                         ownerId,
                         LocalDateTime.now(),
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case WAITING:
                 bookings = bookingRepository.findByBookerAndStatus(
                         ownerId,
                         BookingStatus.WAITING,
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case REJECTED:
                 bookings = bookingRepository.findByBookerAndStatus(
                         ownerId,
                         BookingStatus.REJECTED,
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             default:
                 throw new BadRequestException("Unknown state: " + state);
@@ -154,7 +160,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDtoFullResponse> getBookingFromOwner(long ownerId, String state) {
+    public List<BookingDtoFullResponse> getBookingFromOwner(long ownerId, String state, PageRequest pageRequest) {
 
         validStateAndUser(ownerId, state);
 
@@ -164,37 +170,43 @@ public class BookingServiceImpl implements BookingService {
             case ALL:
                 bookings = bookingRepository.findByItemOwnerId(
                         ownerId,
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case CURRENT:
                 bookings = bookingRepository.findByItemOwnerCurrent(
                         ownerId,
                         LocalDateTime.now(),
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case PAST:
                 bookings = bookingRepository.findByItemOwnerPast(
                         ownerId,
                         LocalDateTime.now(),
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case FUTURE:
                 bookings = bookingRepository.findByItemOwnerFuture(
                         ownerId,
                         LocalDateTime.now(),
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case WAITING:
                 bookings = bookingRepository.findByItemOwnerAndStatus(
                         ownerId,
                         BookingStatus.WAITING,
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             case REJECTED:
                 bookings = bookingRepository.findByItemOwnerAndStatus(
                         ownerId,
                         BookingStatus.REJECTED,
-                        SORT_START_DESC);
+                        SORT_START_DESC,
+                        pageRequest);
                 break;
             default:
                 throw new BadRequestException("Unknown state: " + state);

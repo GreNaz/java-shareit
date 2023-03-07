@@ -17,7 +17,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +44,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequestDtoRS> responseList = requestRepository.findAllByRequesterId(userId).stream()
                 .map(ItemRequestMapper::toItemRequestDtoRS)
                 .collect(Collectors.toList());
-        return setItemsToRequests(responseList);
+        setItemsToRequests(responseList);
+        return responseList;
     }
 
     @Override
@@ -64,14 +64,15 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDtoRS> getRequests(long userId, int from, int size) {
         int page = from / size;
-        PageRequest pr = PageRequest.of(page, size);
-        List<ItemRequestDtoRS> responseList = requestRepository.findAllPageable(userId, pr).stream()
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<ItemRequestDtoRS> responseList = requestRepository.findAllPageable(userId, pageRequest).stream()
                 .map(ItemRequestMapper::toItemRequestDtoRS)
                 .collect(Collectors.toList());
-        return setItemsToRequests(responseList);
+        setItemsToRequests(responseList);
+        return responseList;
     }
 
-    private List<ItemRequestDtoRS> setItemsToRequests(List<ItemRequestDtoRS> itemRequestDtoRS) {
+    private void setItemsToRequests(List<ItemRequestDtoRS> itemRequestDtoRS) {
         Map<Long, ItemRequestDtoRS> requests = itemRequestDtoRS.stream()
                 .collect(Collectors.toMap(ItemRequestDtoRS::getId, x -> x, (a, b) -> b));
         List<Long> ids = requests.values().stream()
@@ -81,6 +82,5 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
         itemDtos.forEach(itemDto -> requests.get(itemDto.getRequestId()).getItems().add(itemDto));
-        return new ArrayList<>(requests.values());
     }
 }
