@@ -2,10 +2,13 @@ package ru.practicum.shareit.user.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.error.exception.NotFoundException;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collections;
@@ -13,6 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ru.practicum.shareit.resource.UserData.*;
@@ -23,6 +27,8 @@ class UserServiceImplTest {
     UserRepository userRepository;
     @InjectMocks
     UserServiceImpl userService;
+    ArgumentCaptor<User> itemArgumentCaptor;
+
 
     @Test
     void getAll_ReturnEmptyList() {
@@ -66,6 +72,46 @@ class UserServiceImplTest {
         var ex = assertThrows(NotFoundException.class,
                 () -> userService.update(0L, getUpdateUser()));
         assertEquals("User with id = 0 not found", ex.getMessage());
+    }
+
+    @Test
+    void update_with_only_new_email() {
+        User userBefore = User.builder()
+                .id(1L)
+                .email("email@mail,ru")
+                .name("name")
+                .build();
+
+        User userAfter = User.builder()
+                .email("newemail@mail.ru")
+                .build();
+
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(userBefore));
+
+        UserDto actual = userService.update(1L, userAfter);
+
+        assertEquals(actual.getEmail(), userAfter.getEmail());
+    }
+
+    @Test
+    void update_with_only_new_name() {
+        User userBefore = User.builder()
+                .id(1L)
+                .email("email@mail,ru")
+                .name("name")
+                .build();
+
+        User userAfter = User.builder()
+                .name("newemail@mail.ru")
+                .build();
+
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(userBefore));
+
+        UserDto actual = userService.update(1L, userAfter);
+
+        assertEquals(actual.getName(), userAfter.getName());
     }
 
     @Test
