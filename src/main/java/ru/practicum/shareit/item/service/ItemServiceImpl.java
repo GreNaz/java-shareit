@@ -79,13 +79,13 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Item not found for update");
         });
         if (item.getOwner().getId() == ownerId) {
-            if ((item.getName() != null) && (!item.getName().isBlank())) {
+            if ((itemDto.getName() != null) && (!item.getName().isBlank())) {
                 item.setName(itemDto.getName());
             }
-            if ((item.getDescription() != null) && (!item.getDescription().isBlank())) {
+            if ((itemDto.getDescription() != null) && (!item.getDescription().isBlank())) {
                 item.setDescription(itemDto.getDescription());
             }
-            if (item.getAvailable() != null) {
+            if (itemDto.getAvailable() != null) {
                 item.setAvailable(itemDto.getAvailable());
             }
             itemRepository.save(item);
