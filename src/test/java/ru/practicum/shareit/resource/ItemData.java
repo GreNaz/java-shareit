@@ -25,4 +25,14 @@ public class ItemData {
                 .requestId(null)
                 .build();
     }
+
+    public static ItemDto getItemDtoForUpdate() {
+        return ItemDto.builder()
+                .id(1L)
+                .name("updated")
+                .description("updated description")
+                .available(true)
+                .requestId(null)
+                .build();
+    }
 }
