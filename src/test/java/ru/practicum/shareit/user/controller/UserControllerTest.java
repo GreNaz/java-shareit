@@ -8,15 +8,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.error.exception.BadRequestException;
-import ru.practicum.shareit.error.exception.ConflictException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.Collections;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -74,28 +73,14 @@ class UserControllerTest {
     void createTest() throws Exception {
         when(userService.create(getUser())).thenReturn(getUserDto());
 
-        mvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(getUserDto()))).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1L)).andExpect(jsonPath("$.name").value("test_nazar")).andExpect(jsonPath("$.email").value("test_nazar@mail.ru"));
-    }
-
-    @Test
-    void createDuplicateEmailTest() throws Exception {
-        when(userService.create(getUser())).thenThrow(new BadRequestException("Duplicate"));
-        BadRequestException ex = assertThrows(BadRequestException.class, () -> userService.create(getUser()));
-        assertEquals("Duplicate", ex.getMessage());
-    }
-
-    @Test
-    void createDuplicateTest() throws Exception {
-        when(userService.create(getUser())).thenThrow(new ConflictException("Duplicate"));
-        ConflictException ex = assertThrows(ConflictException.class, () -> userService.create(getUser()));
-        assertEquals("Duplicate", ex.getMessage());
-    }
-
-    @Test
-    void BadRequestExceptionExceptionTest() throws Exception {
-        when(userService.create(getUser())).thenThrow(new BadRequestException("Duplicate"));
-        BadRequestException ex = assertThrows(BadRequestException.class, () -> userService.create(getUser()));
-        assertEquals("Duplicate", ex.getMessage());
+        mvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(getUserDto())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("test_nazar"))
+                .andExpect(jsonPath("$.email").value("test_nazar@mail.ru"));
     }
 
     @Test
