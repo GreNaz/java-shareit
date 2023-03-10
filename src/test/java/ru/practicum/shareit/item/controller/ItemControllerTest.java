@@ -52,4 +52,21 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$[0].name").value("name"))
                 .andExpect(jsonPath("$[0].description").value("description"));
     }
+
+    @Test
+    void findItemTest() throws Exception {
+        User user = UserMapper.toUser(getUserDto());
+        Item item = ItemMapper.toItem(getItemDto(), user, null);
+        ItemDtoBooking itemDtoBooking = ItemMapper.toItemDtoBooking(item);
+        when(itemService.getById(anyLong(), anyLong())).thenReturn(itemDtoBooking);
+
+        mvc.perform(get("/items/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("name"))
+                .andExpect(jsonPath("$.description").value("description"));
+    }
 }

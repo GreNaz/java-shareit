@@ -29,6 +29,7 @@ public class ItemMapper {
 
     public static Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
         return Item.builder()
+                .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .owner(user)
