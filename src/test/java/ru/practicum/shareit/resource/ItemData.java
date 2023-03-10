@@ -2,7 +2,6 @@ package ru.practicum.shareit.resource;
 
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.dto.ItemDto;
-import ru.practicum.shareit.user.model.User;
 
 public class ItemData {
     public static Item getItem() {
