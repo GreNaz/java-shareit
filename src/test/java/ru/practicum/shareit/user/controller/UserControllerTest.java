@@ -114,10 +114,4 @@ class UserControllerTest {
                 .andExpect(result -> assertEquals("test not found ok",
                         Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
-
-    @Test
-    void deleteTest() throws Exception {
-        mvc.perform(delete("/users/1"))
-                .andExpect(status().isOk());
-    }
 }

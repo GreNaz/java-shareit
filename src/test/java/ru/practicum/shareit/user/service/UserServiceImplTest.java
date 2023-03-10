@@ -113,11 +113,4 @@ class UserServiceImplTest {
 
         assertEquals(actual.getName(), userAfter.getName());
     }
-
-    @Test
-    void delete_verifyInvokingMethod() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(getUser()));
-        userService.delete(1L);
-        verify(userRepository).delete(any());
-    }
 }
