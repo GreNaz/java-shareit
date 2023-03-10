@@ -126,11 +126,6 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public void delete(long id) {
-        itemRepository.deleteById(id);
-    }
-
     private List<ItemDtoBooking> setAllBookingsAndComments(long userId, List<Item> items) {
         LocalDateTime now = LocalDateTime.now();
         List<Long> ids = items.stream()
