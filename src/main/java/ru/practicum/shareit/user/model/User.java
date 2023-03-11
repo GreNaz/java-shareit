@@ -27,9 +27,4 @@ public class User {
         User user = (User) o;
         return id != null && Objects.equals(id, user.id) || Objects.equals(email, user.email);
     }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
