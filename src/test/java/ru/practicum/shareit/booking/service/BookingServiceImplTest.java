@@ -308,6 +308,7 @@ class BookingServiceImplTest {
     @Test
     void create_whenAllIsOk_thenBookingSaved() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
+        BookingMapper.toBookingDtoResponse(booking);
         BookingDtoFullResponse bDto = BookingMapper.toBookingRS(booking);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user2));
