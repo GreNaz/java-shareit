@@ -35,4 +35,9 @@ public class Comment {
         Comment comment = (Comment) o;
         return id != null && Objects.equals(id, comment.id);
     }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
