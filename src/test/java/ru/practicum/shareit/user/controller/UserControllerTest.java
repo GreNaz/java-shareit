@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.error.exception.NotFoundException;
+import ru.practicum.shareit.user.model.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.Collections;
@@ -87,12 +88,25 @@ class UserControllerTest {
     void updateTest() throws Exception {
         when(userService.update(1L, getUpdateUser())).thenReturn(getUpdateDtoUser());
 
-        mvc.perform(patch("/users/1").content(objectMapper.writeValueAsString(getUpdateUser())).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+        mvc.perform(patch("/users/1").content(objectMapper.writeValueAsString(getUpdateUser()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("test_updated"))
                 .andExpect(jsonPath("$.email").value("updated@mail.ru"));
+    }
+
+    @Test
+    void create_Test_bad() throws Exception {
+        UserDto user = getUserDto();
+        user.setEmail("dwa");
+        mvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

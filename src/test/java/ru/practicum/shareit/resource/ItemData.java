@@ -1,5 +1,6 @@
 package ru.practicum.shareit.resource;
 
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 
 public class ItemData {
@@ -11,6 +12,17 @@ public class ItemData {
                 .description("description")
                 .available(true)
                 .requestId(null)
+                .build();
+    }
+
+    public static Item getItem() {
+        return Item.builder()
+                .id(1L)
+                .itemRequest(null)
+                .owner(null)
+                .name("name")
+                .description("description")
+                .available(true)
                 .build();
     }
 

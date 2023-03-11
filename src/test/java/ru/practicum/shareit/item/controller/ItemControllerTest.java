@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapper;
@@ -40,6 +41,8 @@ class ItemControllerTest {
     private final MockMvc mvc;
     @MockBean
     ItemService itemService;
+    @MockBean
+    BookingRepository bookingRepository;
 
     @Test
     void getAllTest() throws Exception {
@@ -144,6 +147,7 @@ class ItemControllerTest {
         commentDto.setId(1L);
         commentDto.setText("Test");
         commentDto.setAuthorName(user.getName());
+
         when(itemService.createComment(anyLong(), any(), anyLong())).thenReturn(commentDto);
 
         mvc.perform(post("/items/1/comment")

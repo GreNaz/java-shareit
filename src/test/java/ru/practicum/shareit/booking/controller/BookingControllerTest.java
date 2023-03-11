@@ -69,6 +69,20 @@ class BookingControllerTest {
     }
 
     @Test
+    void create_isBadRequest() throws Exception {
+        when(bookingService.create(anyLong(), any())).thenReturn(bdr);
+        bookingDto.setEnd(LocalDateTime.now());
+        bookingDto.setStart(LocalDateTime.now().plusHours(1));
+
+        mvc.perform(post("/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .content(objectMapper.writeValueAsString(bookingDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void changeStatusTest() throws Exception {
         bdr.setStatus(BookingStatus.APPROVED);
         when(bookingService.update(anyLong(), anyLong(), anyBoolean())).thenReturn(bdr);

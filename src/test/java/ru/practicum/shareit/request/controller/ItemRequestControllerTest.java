@@ -108,4 +108,13 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$[0].requesterId").value(1L))
                 .andExpect(jsonPath("$[0].description").value("description"));
     }
+
+    @Test
+    void getRequestsListTest_Bad() throws Exception {
+        mvc.perform(get("/requests/all?from=0&size=0")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L))
+                .andExpect(status().isBadRequest());
+    }
 }

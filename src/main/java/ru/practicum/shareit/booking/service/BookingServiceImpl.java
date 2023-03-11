@@ -20,7 +20,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -110,7 +109,7 @@ public class BookingServiceImpl implements BookingService {
 
         validStateAndUser(ownerId, state);
 
-        List<Booking> bookings = new ArrayList<>();
+        List<Booking> bookings = List.of();
 
         switch (BookingState.valueOf(state)) {
             case ALL:
@@ -163,7 +162,7 @@ public class BookingServiceImpl implements BookingService {
 
         validStateAndUser(ownerId, state);
 
-        List<Booking> bookings = new ArrayList<>();
+        List<Booking> bookings = List.of();
 
         switch (BookingState.valueOf(state)) {
             case ALL:
