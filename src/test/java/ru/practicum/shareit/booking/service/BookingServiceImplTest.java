@@ -116,7 +116,20 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void changeStatus_whenBookingAlreadyApproved_thenExceptionThrown() {
+    void changeStatus_whenBooking_REJECTED() {
+        Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
+        when(bookingRepository.save(any())).thenReturn(booking);
+        booking.setStatus(BookingStatus.REJECTED);
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> bookingService.update(1L, 1L, true));
+        assertEquals("This booking can't changed status", ex.getMessage());
+
+    }
+
+    @Test
+    void changeStatus_whenBooking_APPROVED() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
