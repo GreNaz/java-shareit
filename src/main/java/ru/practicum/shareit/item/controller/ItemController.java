@@ -82,4 +82,11 @@ public class ItemController {
             return itemService.search(text, pageRequest);
         }
     }
+
+    @DeleteMapping("/{itemId}")
+    public void delete(
+            @PathVariable long itemId) {
+        log.info("Received a request to delete Item with id {} ", itemId);
+        itemService.delete(itemId);
+    }
 }

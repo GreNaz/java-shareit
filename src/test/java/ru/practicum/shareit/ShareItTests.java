@@ -11,7 +11,7 @@ class ShareItTests {
     }
 
     @Test
-    public void mainTest() {
+    void mainTest() {
         ShareItApp.main(new String[]{});
     }
 

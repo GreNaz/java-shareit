@@ -46,4 +46,11 @@ public class UserController {
         log.info("Received a request to get user with id: {} ", id);
         return userService.get(id);
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(
+            @PathVariable Long id) {
+        log.info("Received a request to remove user with id: {} ", id);
+        userService.delete(id);
+    }
 }

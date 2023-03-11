@@ -17,4 +17,7 @@ public interface UserService {
 
     @Transactional
     UserDto update(long id, User user);
+
+    @Transactional
+    void delete(long id);
 }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class ItemRequestMapper {
     public static ItemRequest toItemRequest(ItemRequestDtoRQ itemRequestDtoRQ, User requester) {
         return ItemRequest.builder()
-                .id(itemRequestDtoRQ.getId())
                 .requester(requester)
                 .description(itemRequestDtoRQ.getDescription())
                 .created(itemRequestDtoRQ.getCreated())

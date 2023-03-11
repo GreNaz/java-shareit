@@ -52,4 +52,9 @@ public class UserServiceImpl implements UserService {
 
         return UserMapper.toUserDto(userInMem);
     }
+
+    @Override
+    public void delete(long id) {
+        userRepository.findById(id).ifPresent(userRepository::delete);
+    }
 }

@@ -25,4 +25,6 @@ public interface ItemService {
 
     List<ItemDto> search(String text, Pageable pageable);
 
+    @Transactional
+    void delete(long id);
 }
