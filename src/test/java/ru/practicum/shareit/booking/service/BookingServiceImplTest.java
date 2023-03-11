@@ -297,4 +297,23 @@ class BookingServiceImplTest {
                 () -> bookingService.getBookingFromOwner(user.getId(), "ALL", PageRequest.ofSize(1)));
         assertEquals("User with id = 1 not found", ex.getMessage());
     }
+
+    @Test
+    void getByOwner_whenUnsupportedStatus_thenExceptionThrown() {
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> bookingService.getBookingFromOwner(user.getId(), "unsupported", PageRequest.ofSize(1)));
+        assertEquals("Unknown state: unsupported", ex.getMessage());
+    }
+
+    @Test
+    void create_whenAllIsOk_thenBookingSaved() {
+        Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
+        BookingDtoFullResponse bDto = BookingMapper.toBookingRS(booking);
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user2));
+        when(bookingRepository.save(any())).thenReturn(booking);
+        bookingService.create(2L, bookingDtoCreate);
+        assertEquals(bDto.getId(), bookingDtoCreate.getId());
+        verify(bookingRepository).save(any());
+    }
 }
