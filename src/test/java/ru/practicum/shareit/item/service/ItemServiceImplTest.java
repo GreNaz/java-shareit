@@ -64,7 +64,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void findItem_whenItemFound_thenReturnItem() {
+    void findItem_whenItemFound() {
         ItemDtoBooking expectedItem = new ItemDtoBooking();
         expectedItem.setComments(new ArrayList<>());
         when(itemRepository.findById(1L)).thenReturn(Optional.of(new Item()));
@@ -118,7 +118,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void create_whenUserNotFound_thenItemExceptionThrown() {
+    void create_whenUserNotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class, () -> itemService.create(1L, new ItemDto()));
@@ -160,7 +160,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void update_whenItemForUpdateNotByOwner_thenItemExceptionThrown() {
+    void update_whenItemForUpdateNotByOwner() {
         User user = new User(
                 1L,
                 "name",
@@ -183,7 +183,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void searchItem_whenTextNotBlank_thenReturnItem() {
+    void searchItem_whenTextNotBlank() {
         User user = new User(
                 1L,
                 "name",
@@ -204,7 +204,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void searchItem_whenTextIsBlank_thenReturnEmptyList() {
+    void searchItem_whenTextIsBlank() {
         when(itemRepository.searchByText(anyString(), any())).thenReturn(Collections.emptyList());
         PageRequest p = PageRequest.of(0, 20);
 
@@ -253,7 +253,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void addComment_whenUserHasNotBooking_thenExceptionThrown() {
+    void addComment_whenUserHasNotBooking() {
         User user = new User(
                 1L,
                 "name",

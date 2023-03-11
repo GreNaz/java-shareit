@@ -2,7 +2,6 @@ package ru.practicum.shareit.user.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,8 +26,6 @@ class UserServiceImplTest {
     UserRepository userRepository;
     @InjectMocks
     UserServiceImpl userService;
-    ArgumentCaptor<User> itemArgumentCaptor;
-
 
     @Test
     void getAll_ReturnEmptyList() {

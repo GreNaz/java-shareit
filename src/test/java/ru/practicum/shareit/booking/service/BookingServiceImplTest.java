@@ -107,7 +107,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void changeStatus_whenBookingNotFound_Booking() {
+    void changeStatus_whenBookingNotFound() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         NotFoundException ex = assertThrows(NotFoundException.class,
@@ -152,7 +152,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingInfo_whenNotOwner_thenReturnInfo() {
+    void getBookingInfo_whenNotOwner() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
@@ -162,7 +162,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingInfo_whenBookingNotFound_thenExceptionThrown() {
+    void getBookingInfo_whenBookingNotFound() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class,
@@ -171,7 +171,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByBooker_whenBookerAllState_thenReturnBooking() {
+    void getByBooker_whenBookerAllState() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findAllByBookerIdOrderByStartDesc(anyLong(), any())).thenReturn(Collections.singletonList(booking));
@@ -183,7 +183,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByBooker_whenBookerCurrentState_thenReturnBooking() {
+    void getByBooker_whenBookerCurrentState() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByBookerCurrent(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -195,7 +195,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByBooker_whenBookerPastState_thenReturnBooking() {
+    void getByBooker_whenBookerPastState() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByBookerPast(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -207,7 +207,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByBooker_whenBookerFutureState_thenReturnBooking() {
+    void getByBooker_whenBookerFutureState() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByBookerFuture(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -219,7 +219,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByBooker_whenBookerWaitingStatus_thenReturnBooking() {
+    void getByBooker_whenBookerWaitingStatus() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByBookerAndStatus(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -231,7 +231,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByBooker_whenBookerRejectedStatus_thenReturnBooking() {
+    void getByBooker_whenBookerRejectedStatus() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByBookerAndStatus(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -243,7 +243,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByOwner_whenBookerCurrentState_thenReturnBooking() {
+    void getByOwner_whenBookerCurrentState() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByItemOwnerCurrent(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -255,7 +255,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByOwner_whenBookerPastState_thenReturnBooking() {
+    void getByOwner_whenBookerPastState() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByItemOwnerPast(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -267,7 +267,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByOwner_whenBookerFutureState_thenReturnBooking() {
+    void getByOwner_whenBookerFutureState() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByItemOwnerFuture(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -279,7 +279,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByOwner_whenBookerWaitingStatus_thenReturnBooking() {
+    void getByOwner_whenBookerWaitingStatus() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByItemOwnerAndStatus(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -291,7 +291,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByOwner_whenBookerRejectedStatus_thenReturnBooking() {
+    void getByOwner_whenBookerRejectedStatus() {
         Booking booking = BookingMapper.toBooking(bookingDtoCreate, item, user);
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(bookingRepository.findByItemOwnerAndStatus(anyLong(), any(), any(), any())).thenReturn(Collections.singletonList(booking));
@@ -303,7 +303,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByOwner_whenBookerNotFound_thenExceptionThrown() {
+    void getByOwner_whenBookerNotFound() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class,
@@ -312,7 +312,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getByOwner_whenUnsupportedStatus_thenExceptionThrown() {
+    void getByOwner_whenUnsupportedStatus() {
         BadRequestException ex = assertThrows(BadRequestException.class,
                 () -> bookingService.getBookingFromOwner(user.getId(), "unsupported", PageRequest.ofSize(1)));
         assertEquals("Unknown state: unsupported", ex.getMessage());
