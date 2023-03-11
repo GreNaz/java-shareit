@@ -62,7 +62,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDtoFullResponse update(long bookingId, long ownerId, boolean approved) {
 
-        User user = userRepository.findById(ownerId).orElseThrow(() -> {
+        userRepository.findById(ownerId).orElseThrow(() -> {
             throw new NotFoundException("User with id = " + ownerId + " not found");
         });
 
