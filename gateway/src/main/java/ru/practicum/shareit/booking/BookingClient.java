@@ -18,12 +18,7 @@ public class BookingClient extends BaseClient {
 
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
-        super(
-                builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
-                        .requestFactory(HttpComponentsClientHttpRequestFactory::new)
-                        .build()
-        );
+        super(builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX)).requestFactory(HttpComponentsClientHttpRequestFactory::new).build());
     }
 
     public ResponseEntity<Object> create(long userId, BookingDtoCreate bookingDtoCreate) {
@@ -31,11 +26,7 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getBookings(long userId, String state, Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state,
-                "from", from,
-                "size", size
-        );
+        Map<String, Object> parameters = Map.of("state", state, "from", from, "size", size);
         return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
 
@@ -44,18 +35,12 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> update(long bookingId, long userId, Boolean approved) {
-        Map<String, Object> parameters = Map.of(
-                "approved", approved
-        );
+        Map<String, Object> parameters = Map.of("approved", approved);
         return patch("/" + userId + "?approved={approved}", bookingId, parameters, null);
     }
 
     public ResponseEntity<Object> getBookingFromOwner(long userId, String state, int from, int size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state,
-                "from", from,
-                "size", size
-        );
+        Map<String, Object> parameters = Map.of("state", state, "from", from, "size", size);
         return get("/owner?state={state}&from={from}&size={size}", userId, parameters);
     }
 }
