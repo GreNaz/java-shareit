@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
@@ -54,7 +55,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(long id) {
+    public ResponseEntity<Object> delete(long id) {
         userRepository.findById(id).ifPresent(userRepository::delete);
+        return ResponseEntity.ok().build();
     }
 }

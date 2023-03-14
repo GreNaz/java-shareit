@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.model.dto.UserDto;
@@ -41,8 +42,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(
+    public ResponseEntity<Object> delete(
             @PathVariable Long id) {
-        userService.delete(id);
+        return userService.delete(id);
     }
 }

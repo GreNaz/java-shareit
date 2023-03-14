@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.dto.UserDto;
@@ -19,5 +20,5 @@ public interface UserService {
     UserDto update(long id, User user);
 
     @Transactional
-    void delete(long id);
+    ResponseEntity<Object> delete(long id);
 }

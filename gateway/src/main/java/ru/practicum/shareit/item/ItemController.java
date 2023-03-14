@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
@@ -14,7 +15,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
